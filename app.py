@@ -172,3 +172,99 @@ def created():
     </body>
 <html>
 ''', 201
+
+@app.route('/lab1/400')
+def bad_request():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>400 Bad Request</title>
+</head>
+<body>
+    <h1>400 Bad Request</h1>
+    <p>Сервер не может обработать запрос из-за синтаксической ошибки.</p>
+    <p>Пожалуйста, проверьте правильность запроса.</p>
+</body>
+</html>
+''', 400
+
+@app.route('/lab1/401')
+def unauthorized():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>401 Unauthorized</title>
+</head>
+<body>
+    <h1>401 Unauthorized</h1>
+    <p>Для доступа к этой странице требуется аутентификация.</p>
+    <p>Пожалуйста, предоставьте действительные учетные данные.</p>
+</body>
+</html>
+''', 401
+
+@app.route('/lab1/402')
+def payment_required():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>402 Payment Required</title>
+</head>
+<body>
+    <h1>402 Payment Required</h1>
+    <p>Для доступа к этому ресурсу требуется оплата.</p>
+    <p>Данный код зарезервирован для будущего использования.</p>
+</body>
+</html>
+''', 402
+
+@app.route('/lab1/403')
+def forbidden():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 Forbidden</title>
+</head>
+<body>
+    <h1>403 Forbidden</h1>
+    <p>Доступ к этому ресурсу запрещен.</p>
+    <p>У вас недостаточно прав для просмотра этой страницы.</p>
+</body>
+</html>
+''', 403
+
+@app.route('/lab1/405')
+def method_not_allowed():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>405 Method Not Allowed</title>
+</head>
+<body>
+    <h1>405 Method Not Allowed</h1>
+    <p>Метод запроса не поддерживается для данного ресурса.</p>
+    <p>Пожалуйста, используйте допустимый HTTP-метод.</p>
+</body>
+</html>
+''', 405
+
+@app.route('/lab1/418')
+def im_a_teapot():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>418 I'm a teapot</title>
+</head>
+<body>
+    <h1>418 I'm a teapot</h1>
+    <p>Я - чайник и не могу заваривать кофе.</p>
+    <p>Это шутливый код состояния HTTP из RFC 2324.</p>
+</body>
+</html>
+''', 418
