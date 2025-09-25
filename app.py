@@ -2,35 +2,122 @@ from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
+from flask import request, url_for
+import datetime
+
+# Глобальная переменная для хранения лога (в реальном приложении лучше использовать БД)
+access_log = []
+
 @app.errorhandler(404)
 def not_found(err):
+    # Получаем данные о запросе
+    client_ip = request.remote_addr
+    access_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    requested_url = request.url
+    user_agent = request.headers.get('User-Agent', 'Неизвестно')
+    
+    # Добавляем запись в лог
+    log_entry = {
+        'ip': client_ip,
+        'time': access_time,
+        'url': requested_url,
+        'user_agent': user_agent
+    }
+    access_log.append(log_entry)
+    
+    # Формируем HTML с логом
+    log_html = '<h3>История обращений к несуществующим страницам:</h3>'
+    log_html += '<table border="1" style="margin: 20px auto; border-collapse: collapse;">'
+    log_html += '<tr><th>Время</th><th>IP-адрес</th><th>Запрошенный URL</th><th>User-Agent</th></tr>'
+    
+    for entry in reversed(access_log[-10:]):  # Показываем последние 10 записей
+        log_html += f'''
+        <tr>
+            <td>{entry['time']}</td>
+            <td>{entry['ip']}</td>
+            <td>{entry['url']}</td>
+            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">{entry['user_agent']}</td>
+        </tr>
+        '''
+    
+    log_html += '</table>'
+    
     pat = url_for("static", filename="pp.jpg")
-    return '''
+    
+    return f'''
 <!DOCTYPE html>
 <html>
 <head>
     <title>404 - Страница не найдена</title>
     <style>
-        body {
+        body {{
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 50px;
-        }
-        h1 {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }}
+        h1 {{
             color: red;
             font-size: 50px;
-        }
-        img {
+        }}
+        .info {{
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: left;
+            display: inline-block;
+        }}
+        img {{
             width: 200px;
             margin: 20px;
-        }
+        }}
+        table {{
+            font-size: 14px;
+            width: 100%;
+        }}
+        th {{
+            background: #e0e0e0;
+            padding: 10px;
+        }}
+        td {{
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }}
+        .navigation {{
+            margin: 20px 0;
+        }}
+        .navigation a {{
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }}
     </style>
 </head>
 <body>
     <h1>404</h1>
     <h2>Страница не найдена</h2>
-    <p>Извините, такой страницы не существует.</p>
-    <img src="''' + pat + '''">
+    
+    <div class="info">
+        <strong>Информация о запросе:</strong><br>
+        IP-адрес: {client_ip}<br>
+        Дата и время: {access_time}<br>
+        Запрошенный URL: {requested_url}<br>
+        Браузер: {user_agent}
+    </div>
+    
+    <img src="{pat}" alt="Ошибка 404">
+    
+    <div class="navigation">
+        <a href="/">Вернуться на главную страницу</a>
+    </div>
+    
+    {log_html}
+
 </body>
 </html>
 ''', 404
