@@ -151,8 +151,12 @@ def image():
         <h1>Картинка</h1>
         <img src="''' + path + '''">
     </body>
-</html>
-'''
+</html>''', 200, {
+        'Content-Language': 'ru-RU',  
+        'X-Image-Type': 'People',     
+        'X-Server-Location': 'Novosibirsk',  
+        'X-Student-Name': 'Atamankina Ekaterina' 
+    }
 
 count = 0
 
