@@ -7,6 +7,70 @@ def not_found(err):
     return "Нет такой страницы", 404
 
 @app.route("/")
+@app.route('/index')
+def index():
+    return '''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>НГТУ, ФБ, Лабораторные работы</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
+        </header>
+        
+        <nav>
+            <a href="/lab1">Первая лабораторная</a>
+        </nav>
+                
+        <footer>
+            <p>Атаманкина Екатерина Романовна</p>
+            <p>ФБИ-33</p>
+            <p>3 курс</p>
+            <p>2025</p>
+        </footer>
+    </div>
+</body>
+</html>
+'''
+
+@app.route('/lab1')
+def lab1():
+    return '''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>НГТУ, ФБ, Первая лабораторная</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WEB-программирование, первая лабораторная, ссылки на страницы</h1>
+        </header>
+        
+        <nav>
+            <a href="/lab1/info">Информация</a><br>
+            <a href="/lab1/web">Web</a><br>
+            <a href="/lab1/image">Картинка</a><br>
+            <a href="/lab1/counter">Счетчик</a><br>
+            <a href="/lab1/created">Created</a><br>
+        </nav>
+                
+        <footer>
+            <p>Атаманкина Екатерина Романовна</p>
+            <p>ФБИ-33</p>
+            <p>3 курс</p>
+            <p>2025</p>
+        </footer>
+    </div>
+</body>
+</html>
+'''
+
 @app.route("/lab1/web")
 def web():
     return """<!doctype html>
