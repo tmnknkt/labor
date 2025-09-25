@@ -297,3 +297,20 @@ def im_a_teapot():
 </body>
 </html>
 ''', 418
+
+@app.route('/lab1/error500')
+def cause_error():
+    result = 1 / 0
+    return "Ошибка"
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return '''
+<html>
+<body>
+    <h1>500 - Ошибка сервера</h1>
+    <p>На сервере произошла внутренняя ошибка.</p>
+    <p>Попробуйте обновить страницу или вернуться позже.</p>
+</body>
+</html>
+''', 500
