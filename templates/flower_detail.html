@@ -1,32 +1,20 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Цветок {{ flower_id }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
-</head>
-<body>
-    <header>
-        <h1>Информация о цветке</h1>
-    </header>
-    
-    <main>
-        <div class="flower-card">
-            <h2>Цветок #{{ flower_id + 1 }}</h2>
-            <p class="flower-name">{{ flower }}</p>
-            <p>Всего цветов в коллекции: {{ total_flowers }}</p>
-        </div>
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <h1>Информация о цветке</h1>
+    <div>
+        <h2>Цветок #{{ flower_id + 1 }}</h2>
+        <p>{{ flower }}</p>
+        <p>Всего цветов в коллекции: {{ total_flowers }}</p>
+    </div>
         
-        <nav>
-            <a href="/lab2/all_flowers">Посмотреть все цветы</a> |
-            <a href="/lab2/add_flower/орхидея">Добавить новый цветок</a> |
-            <a href="/lab2/clear_flowers">Очистить список</a>
-        </nav>
-    </main>
-    
-    <footer>
-        <p>&copy; Коллекция цветов, 2025</p>
-    </footer>
-</body>
-</html>
+    <nav>
+        <a href="/lab2/all_flowers">Посмотреть все цветы</a> |
+        <a href="/lab2/add_flower/орхидея">Добавить новый цветок</a> |
+        <a href="/lab2/clear_flowers">Очистить список</a>
+    </nav>
+{% endblock %}
