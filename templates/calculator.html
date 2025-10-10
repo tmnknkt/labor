@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор - {{ a }} и {{ b }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+</head>
+<body>
+    <header>
+        <h1>Математический калькулятор</h1>
+    </header>
+    
+    <main>
+        <div class="calculator">
+            <h2>Операции с числами {{ a }} и {{ b }}</h2>
+            
+            <div class="operations-grid">
+                {% for operation, result in operations.items() %}
+                <div class="operation-card">
+                    <h3>{{ operation }}</h3>
+                    <p class="expression">
+                        {% if operation == 'Сложение' %}
+                            {{ a }} + {{ b }}
+                        {% elif operation == 'Вычитание' %}
+                            {{ a }} - {{ b }}
+                        {% elif operation == 'Умножение' %}
+                            {{ a }} * {{ b }}
+                        {% elif operation == 'Деление' %}
+                            {{ a }} / {{ b }}
+                        {% elif operation == 'Возведение в степень' %}
+                            {{ a }}<sup>{{ b }}</sup>
+                        {% endif %}
+                    </p>
+                    <p class="result">= {{ result }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; Математический калькулятор, 2025</p>
+    </footer>
+</body>
+</html>
