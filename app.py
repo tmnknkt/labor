@@ -452,10 +452,18 @@ def example():
     number_lr = 'Лабораторная работа 2'
     group = 'ФБИ-33'
     year = '3 курс'
+    fruits = [
+        {'name': 'яблоки', 'price': 100},
+        {'name': 'груши', 'price': 120},
+        {'name': 'апельсины', 'price': 80},
+        {'name': 'мандарины', 'price': 95},
+        {'name': 'манго', 'price': 321}
+    ]
     return render_template('example.html'
                            , 
                          name=name, 
                          number_lr=number_lr, 
                          group=group, 
-                         year=year
+                         year=year,
+                         fruits=fruits
                          )
