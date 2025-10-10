@@ -537,3 +537,20 @@ def calc_default():
 @app.route('/lab2/calc/<int:a>')
 def calc_single(a):
     return redirect(url_for('calc', a=a, b=1))
+
+books = [
+    {'title': 'Мастер и Маргарита', 'author': 'Михаил Булгаков', 'genre': 'Роман', 'pages': 480},
+    {'title': 'Преступление и наказание', 'author': 'Фёдор Достоевский', 'genre': 'Психологический роман', 'pages': 672},
+    {'title': 'Война и мир', 'author': 'Лев Толстой', 'genre': 'Эпопея', 'pages': 1225},
+    {'title': '1984', 'author': 'Джордж Оруэлл', 'genre': 'Антиутопия', 'pages': 328},
+    {'title': 'Гарри Поттер и философский камень', 'author': 'Джоан Роулинг', 'genre': 'Фэнтези', 'pages': 432},
+    {'title': 'Три товарища', 'author': 'Эрих Мария Ремарк', 'genre': 'Роман', 'pages': 480},
+    {'title': 'Маленький принц', 'author': 'Антуан де Сент-Экзюпери', 'genre': 'Философская сказка', 'pages': 96},
+    {'title': 'Шерлок Холмс', 'author': 'Артур Конан Дойл', 'genre': 'Детектив', 'pages': 320},
+    {'title': 'Убить пересмешника', 'author': 'Харпер Ли', 'genre': 'Роман воспитания', 'pages': 416},
+    {'title': 'Гордость и предубеждение', 'author': 'Джейн Остин', 'genre': 'Любовный роман', 'pages': 480}
+]
+
+@app.route('/lab2/books')
+def books_list():
+    return render_template('books.html', books=books)
