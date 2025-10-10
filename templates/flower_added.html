@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Добавлен новый цветок</h1>
+    <p>Название нового цветка: {{ name }}</p>
+    <p>Всего цветов: {{ flower_list|length }}</p>
+    <p>Полный список: 
+        {% for flower in flower_list %}
+            {{ flower.name }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <a href="/lab2/all_flowers">Посмотреть все цветы</a><br>
+    <a href="/lab2/flowers/{{ new_id }}">Посмотреть добавленный цветок</a>
+{% endblock %}

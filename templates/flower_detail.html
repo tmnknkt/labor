@@ -1,20 +1,18 @@
 {% extends "base.html" %}
 
-{# номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 2{% endblock %}
 
-{# основной контент: #}
 {% block main %}
     <h1>Информация о цветке</h1>
     <div>
         <h2>Цветок #{{ flower_id + 1 }}</h2>
-        <p>{{ flower }}</p>
+        <p><strong>Название:</strong> {{ flower.name }}</p>
+        <p><strong>Цена:</strong> {{ flower.price }} руб.</p>
         <p>Всего цветов в коллекции: {{ total_flowers }}</p>
     </div>
         
     <nav>
         <a href="/lab2/all_flowers">Посмотреть все цветы</a> |
-        <a href="/lab2/add_flower/орхидея">Добавить новый цветок</a> |
-        <a href="/lab2/clear_flowers">Очистить список</a>
+        <a href="/lab2/del_flower/{{ flower_id }}" style="color: red;">Удалить этот цветок</a>
     </nav>
 {% endblock %}
