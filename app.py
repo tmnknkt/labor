@@ -452,4 +452,10 @@ def example():
     number_lr = 'Лабораторная работа 2'
     group = 'ФБИ-33'
     year = '3 курс'
-    return render_template('example.html', name=name, number_lr=number_lr, group=group, year=year)
+    return render_template('example.html'
+                           , 
+                         name=name, 
+                         number_lr=number_lr, 
+                         group=group, 
+                         year=year
+                         )
