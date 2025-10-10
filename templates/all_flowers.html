@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все цветы</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+</head>
+<body>
+    <header>
+        <h1>Коллекция цветов</h1>
+    </header>
+    
+    <main>
+        <div class="flowers-info">
+            <h2>Всего цветов: {{ count }}</h2>
+            
+            {% if count > 0 %}
+            <ul class="flowers-list">
+                {% for flower in flowers %}
+                <li>
+                    <a href="/lab2/flowers/{{ loop.index0 }}">{{ flower }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Список цветов пуст</p>
+            {% endif %}
+        </div>
+        
+        <nav>
+            <a href="/lab2/add_flower/орхидея">Добавить новый цветок</a> |
+            <a href="/lab2/clear_flowers">Очистить список</a>
+        </nav>
+    </main>
+    
+    <footer>
+        <p>&copy; Коллекция цветов, 2025</p>
+    </footer>
+</body>
+</html>
