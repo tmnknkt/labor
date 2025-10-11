@@ -1,14 +1,14 @@
 from flask import Blueprint, url_for, request, redirect, abort, render_template
 import datetime
-lab1 = Blueprint('lab2', __name__)
+lab2 = Blueprint('lab2', __name__)
 
 
-@app.route('/lab2/a')
+@lab2.route('/lab2/a')
 def a():
     return 'без слэша'
 
 
-@app.route('/lab2/a/')
+@lab2.route('/lab2/a/')
 def a2():
     return 'со слэшем'
 
@@ -21,7 +21,7 @@ flower_list = [
 ]
 
 
-@app.route ('/lab2/flowers/<int:flower_id>')
+@lab2.route ('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
     if flower_id >= len(flower_list):
         abort(404)
@@ -32,7 +32,7 @@ def flowers(flower_id):
                              total_flowers=len(flower_list))
 
 
-@app.route ('/lab2/add_flower/<name>')
+@lab2.route ('/lab2/add_flower/<name>')
 def add_flower(name):
     flower_list.append(name)
     return render_template('flower_added.html', name=name,
@@ -40,7 +40,7 @@ def add_flower(name):
                            new_id=len(flower_list)-1)
 
 
-@app.route('/lab2/add_flower/')
+@lab2.route('/lab2/add_flower/')
 def add_flower_form():
     flower_name = request.args.get('flower_name', '').strip()
     if not flower_name:
@@ -50,14 +50,14 @@ def add_flower_form():
     return redirect('/lab2/all_flowers')
 
 
-@app.route('/lab2/all_flowers')
+@lab2.route('/lab2/all_flowers')
 def all_flowers():
     return render_template('all_flowers.html', 
                          flowers=flower_list, 
                          count=len(flower_list))
 
 
-@app.route('/lab2/del_flower/<int:num>')
+@lab2.route('/lab2/del_flower/<int:num>')
 def del_flower(num):
     if num < 0 or num >= len(flower_list):
         abort(404)
@@ -65,13 +65,13 @@ def del_flower(num):
     return redirect('/lab2/all_flowers')
 
 
-@app.route('/lab2/clear_flowers')
+@lab2.route('/lab2/clear_flowers')
 def clear_flowers():
     flower_list.clear()
     return redirect('/lab2/all_flowers')
 
 
-@app.route('/lab2/example')
+@lab2.route('/lab2/example')
 def example():
     name = 'Атаманкина Екатерина'
     number_lr = 'Лабораторная работа 2'
@@ -94,18 +94,18 @@ def example():
                          )
 
 
-@app.route('/lab2/')
-def lab2():
+@lab2.route('/lab2/')
+def lab2_2():
     return render_template('lab2.html')
 
 
-@app.route('/lab2/filters')
-def filterd():
+@lab2.route('/lab2/filters')
+def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase = phrase)
 
 
-@app.route('/lab2/calc/<int:a>/<int:b>')
+@lab2.route('/lab2/calc/<int:a>/<int:b>')
 def calc(a, b):
     operations = {
         'Сложение': a + b,
@@ -121,12 +121,12 @@ def calc(a, b):
                          operations=operations)
 
 
-@app.route('/lab2/calc/')
+@lab2.route('/lab2/calc/')
 def calc_default():
     return redirect(url_for('calc', a=1, b=1))
 
 
-@app.route('/lab2/calc/<int:a>')
+@lab2.route('/lab2/calc/<int:a>')
 def calc_single(a):
     return redirect(url_for('calc', a=a, b=1))
 
@@ -145,7 +145,7 @@ books = [
 ]
 
 
-@app.route('/lab2/books')
+@lab2.route('/lab2/books')
 def books_list():
     return render_template('books.html', books=books)
 
@@ -254,6 +254,6 @@ dog_breeds = [
 ]
 
 
-@app.route('/lab2/dogs')
+@lab2.route('/lab2/dogs')
 def dogs_list():
     return render_template('dogs.html', dogs=dog_breeds)

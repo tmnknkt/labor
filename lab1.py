@@ -122,7 +122,7 @@ def not_found(err):
 
 
 @lab1.route('/lab1')
-def lab():
+def lab1_1():
     return '''
 <!DOCTYPE html>
 <html lang="ru">

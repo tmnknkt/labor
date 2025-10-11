@@ -1,14 +1,18 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
 from lab1 import lab1
 from lab2 import lab2
+from lab3 import lab3
 import datetime
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
+app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 
 # Глобальная переменная для хранения лога (в реальном приложении лучше использовать БД)
 access_log = []
+
 
 @app.errorhandler(404)
 def not_found(err):
@@ -124,6 +128,7 @@ def not_found(err):
 </html>
 ''', 404
 
+
 @app.route("/")
 @app.route('/index')
 def index():
@@ -143,6 +148,7 @@ def index():
         <nav>
             <a href="/lab1">Первая лабораторная</a><br>
             <a href="/lab2">Вторая лабораторная</a><br>
+            <a href="/lab3">Третья лабораторная</a><br>
         </nav>
                 
         <footer>
@@ -155,6 +161,7 @@ def index():
 </body>
 </html>
 '''
+
 
 @app.errorhandler(500)
 def internal_server_error(error):
