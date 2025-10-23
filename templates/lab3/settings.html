@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <style>
+        .custom-styles {
+            color: {{ color or 'black' }} !important;
+            background-color: {{ bg_color or 'white' }} !important;
+            font-size: {{ font_size or '16px' }} !important;
+            text-align: {{ text_align or 'left' }} !important;
+        }
+    </style>
+
+    <h1>Cookies</h1>
+    
+    <div class="custom-styles" style="padding: 20px; border: 1px solid #ccc; margin: 20px 0; width: 400px;">
+        <h3>Тестовый текст для проверки стилей:</h3>
+        <p>Цвет текста: {{ color or 'не задан' }}</p>
+        <p>Цвет фона: {{ bg_color or 'не задан' }}</p>
+        <p>Размер шрифта: {{ font_size or 'не задан' }}</p>
+        <p>Выравнивание: {{ text_align or 'не задан' }}</p>
+    </div>
+
+    <form action="/lab3/settings">
+        <div>
+            <label for="color">Выберите цвет текста:</label>
+            <input type="color" id="color" name="color" value="{{ color or '#000000' }}">
+        </div>
+
+        <div>
+            <label for="bg_color">Выберите цвет фона:</label>
+            <input type="color" id="bg_color" name="bg_color" value="{{ bg_color or '#ffffff' }}">
+        </div>
+
+        <div>
+            <label for="font_size">Выберите размер шрифта:</label>
+            <select id="font_size" name="font_size">
+                <option value="14px" {% if font_size == '14px' %}selected{% endif %}>Маленький</option>
+                <option value="16px" {% if font_size == '16px' or not font_size %}selected{% endif %}>Средний</option>
+                <option value="18px" {% if font_size == '18px' %}selected{% endif %}>Большой</option>
+                <option value="20px" {% if font_size == '20px' %}selected{% endif %}>Очень большой</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="text_align">Выберите выравнивание текста:</label>
+            <select id="text_align" name="text_align">
+                <option value="left" {% if text_align == 'left' or not text_align %}selected{% endif %}>Слева</option>
+                <option value="center" {% if text_align == 'center' %}selected{% endif %}>По центру</option>
+                <option value="right" {% if text_align == 'right' %}selected{% endif %}>Справа</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">ОК</button>
+        </div>
+    </form>
+{% endblock %}
