@@ -42,3 +42,9 @@ footer {
     border-top: 3px solid var(--accent-color);
     margin-top: auto;
 }
+
+.error {
+    color: #d32f2f;
+    margin: 10px 0;
+    font-family: Arial, sans-serif;
+}
