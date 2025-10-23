@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <div style="text-align: center; padding: 50px 20px;">
+        <h1 style="color: #4CAF50;">✅ Спасибо!</h1>
+        <div style="font-size: 20px; margin: 30px 0;">
+            Ваш заказ оплачен на сумму <strong>{{ price }} рублей</strong>
+        </div>
+        <div style="font-size: 16px; color: #666; margin-bottom: 30px;">
+            Ожидайте доставку
+        </div>
+        <a href="/lab3/order" style="
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        ">Сделать новый заказ</a>
+    </div>
+
+    <style>
+        .success-message {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+{% endblock %}

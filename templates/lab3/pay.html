@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Оплата</h1>
+    
+    <div style="font-size: 18px; margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        Сумма к оплате: <strong>{{ price }} руб.</strong>
+    </div>
+    
+    <form action="/lab3/success">
+        <input type="hidden" name="price" value="{{ price }}">
+        
+        <div>Номер банковской карты:</div>
+        <label>
+            <input type="text" name="card" pattern="\d{16}" placeholder="0000 0000 0000 0000" required>
+        </label>
+
+        <div>Имя держателя карты:</div>
+        <label>
+            <input type="text" name="name" placeholder="IVAN IVANOV" required>
+        </label>
+
+        <div>Номер CVV:</div>
+        <label>
+            <input type="text" name="cvv" size="3" pattern="\d{3}" placeholder="123" required>
+        </label>
+
+        <div style="margin-top: 20px;">
+            <button type="submit">Оплатить {{ price }} руб.</button>
+            <a href="/lab3/order" style="margin-left: 15px; color: #666;">Отказаться</a>
+        </div>
+    </form>
+
+    <style>
+        form {
+            max-width: 400px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+{% endblock %}
