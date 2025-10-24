@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+<h1>Форма железнодорожного билета</h1>
+
+<form method="POST">
+    <div>
+        <label>ФИО пассажира:</label>
+        <input type="text" name="fio" value="{{ fio or '' }}">
+        <span class="error">{{ errors.fio }}</span>
+    </div>
+
+    <div>
+        <label>Полка:</label>
+        <select name="shelf">
+            <option value="">Выберите полку</option>
+            <option value="lower" {{ shelf == 'lower' and 'selected' }}>Нижняя</option>
+            <option value="upper" {{ shelf == 'upper' and 'selected' }}>Верхняя</option>
+            <option value="upper_side" {{ shelf == 'upper_side' and 'selected' }}>Верхняя боковая</option>
+            <option value="lower_side" {{ shelf == 'lower_side' and 'selected' }}>Нижняя боковая</option>
+        </select>
+        <span class="error">{{ errors.shelf }}</span>
+    </div>
+
+    <div>
+        <label>Бельё:</label>
+        <input type="radio" name="bedding" value="yes" {{ bedding == 'yes' and 'checked' }}> Да
+        <input type="radio" name="bedding" value="no" {{ bedding == 'no' and 'checked' }}> Нет
+        <span class="error">{{ errors.bedding }}</span>
+    </div>
+
+    <div>
+        <label>Багаж:</label>
+        <input type="radio" name="baggage" value="yes" {{ baggage == 'yes' and 'checked' }}> Да
+        <input type="radio" name="baggage" value="no" {{ baggage == 'no' and 'checked' }}> Нет
+        <span class="error">{{ errors.baggage }}</span>
+    </div>
+
+    <div>
+        <label>Возраст:</label>
+        <input type="number" name="age" value="{{ age or '' }}" min="1" max="120">
+        <span class="error">{{ errors.age }}</span>
+    </div>
+
+    <div>
+        <label>Пункт выезда:</label>
+        <input type="text" name="departure" value="{{ departure or '' }}">
+        <span class="error">{{ errors.departure }}</span>
+    </div>
+
+    <div>
+        <label>Пункт назначения:</label>
+        <input type="text" name="destination" value="{{ destination or '' }}">
+        <span class="error">{{ errors.destination }}</span>
+    </div>
+
+    <div>
+        <label>Дата поездки:</label>
+        <input type="date" name="date" value="{{ date or '' }}">
+        <span class="error">{{ errors.date }}</span>
+    </div>
+
+    <div>
+        <label>Страховка:</label>
+        <input type="radio" name="insurance" value="yes" {{ insurance == 'yes' and 'checked' }}> Да
+        <input type="radio" name="insurance" value="no" {{ insurance == 'no' and 'checked' }}> Нет
+        <span class="error">{{ errors.insurance }}</span>
+    </div>
+
+    <div>
+        <button type="submit">Оформить билет</button>
+    </div>
+</form>
+{% endblock %}

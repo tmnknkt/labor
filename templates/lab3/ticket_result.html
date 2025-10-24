@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+<h1>Железнодорожный билет</h1>
+
+<div style="border: 2px solid #333; padding: 20px; max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; color: #d40000;">ЖЕЛЕЗНОДОРОЖНЫЙ БИЛЕТ</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Пассажир:</strong> {{ fio }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Тип билета:</strong> {{ ticket_type }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Маршрут:</strong> {{ departure }} → {{ destination }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Дата поездки:</strong> {{ date }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Место:</strong> 
+        {% if shelf == 'lower' %}Нижняя полка
+        {% elif shelf == 'upper' %}Верхняя полка
+        {% elif shelf == 'upper_side' %}Верхняя боковая
+        {% elif shelf == 'lower_side' %}Нижняя боковая
+        {% endif %}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <strong>Дополнительные услуги:</strong>
+        <ul>
+            <li>Бельё: {{ 'Да' if bedding == 'yes' else 'Нет' }}</li>
+            <li>Багаж: {{ 'Да' if baggage == 'yes' else 'Нет' }}</li>
+            <li>Страховка: {{ 'Да' if insurance == 'yes' else 'Нет' }}</li>
+        </ul>
+    </div>
+    
+    <div style="border-top: 1px solid #333; padding-top: 10px;">
+        <h3 style="text-align: center; color: #d40000;">
+            ИТОГО К ОПЛАТЕ: {{ total_price }} руб.
+        </h3>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="/lab3/ticket">Оформить новый билет</a>
+</div>
+{% endblock %}
