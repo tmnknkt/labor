@@ -99,6 +99,18 @@ def settings():
                          text_align=text_align)
 
 
+@lab3.route('/lab3/settings/clear')
+def clear_settings():
+    resp = make_response(redirect('/lab3/settings'))
+    
+    resp.set_cookie('color', '', expires=0)
+    resp.set_cookie('bg_color', '', expires=0)
+    resp.set_cookie('font_size', '', expires=0)
+    resp.set_cookie('text_align', '', expires=0)
+    
+    return resp
+
+
 @lab3.route('/lab3/ticket', methods=['GET', 'POST'])
 def ticket_form():
     errors = {}
