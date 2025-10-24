@@ -186,3 +186,100 @@ def ticket_form():
 @lab3.route('/lab3/ticket_result')
 def ticket_result():
     return redirect(url_for('lab3.ticket_form'))
+
+
+
+PRODUCTS = [
+    {'id': 1, 'name': 'iPhone 15', 'price': 89990, 'brand': 'Apple', 'color': 'черный', 'weight': 171},
+    {'id': 2, 'name': 'Samsung Galaxy S24', 'price': 74990, 'brand': 'Samsung', 'color': 'белый', 'weight': 167},
+    {'id': 3, 'name': 'Xiaomi Redmi Note 13', 'price': 24990, 'brand': 'Xiaomi', 'color': 'синий', 'weight': 188},
+    {'id': 4, 'name': 'Google Pixel 8', 'price': 69990, 'brand': 'Google', 'color': 'серый', 'weight': 187},
+    {'id': 5, 'name': 'OnePlus 11', 'price': 54990, 'brand': 'OnePlus', 'color': 'зеленый', 'weight': 205},
+    {'id': 6, 'name': 'Realme 11 Pro+', 'price': 32990, 'brand': 'Realme', 'color': 'золотой', 'weight': 183},
+    {'id': 7, 'name': 'iPhone 14', 'price': 69990, 'brand': 'Apple', 'color': 'красный', 'weight': 172},
+    {'id': 8, 'name': 'Samsung Galaxy A54', 'price': 34990, 'brand': 'Samsung', 'color': 'фиолетовый', 'weight': 202},
+    {'id': 9, 'name': 'Huawei P60 Pro', 'price': 79990, 'brand': 'Huawei', 'color': 'черный', 'weight': 200},
+    {'id': 10, 'name': 'Honor 90', 'price': 29990, 'brand': 'Honor', 'color': 'синий', 'weight': 183},
+    {'id': 11, 'name': 'Sony Xperia 5 V', 'price': 84990, 'brand': 'Sony', 'color': 'черный', 'weight': 182},
+    {'id': 12, 'name': 'Motorola Edge 40', 'price': 39990, 'brand': 'Motorola', 'color': 'зеленый', 'weight': 167},
+    {'id': 13, 'name': 'Nokia G42', 'price': 19990, 'brand': 'Nokia', 'color': 'фиолетовый', 'weight': 193},
+    {'id': 14, 'name': 'iPhone 13', 'price': 59990, 'brand': 'Apple', 'color': 'розовый', 'weight': 174},
+    {'id': 15, 'name': 'Samsung Galaxy Z Flip5', 'price': 99990, 'brand': 'Samsung', 'color': 'сиреневый', 'weight': 187},
+    {'id': 16, 'name': 'Xiaomi 13T', 'price': 44990, 'brand': 'Xiaomi', 'color': 'черный', 'weight': 197},
+    {'id': 17, 'name': 'Google Pixel 7a', 'price': 44990, 'brand': 'Google', 'color': 'белый', 'weight': 193},
+    {'id': 18, 'name': 'Nothing Phone (2)', 'price': 49990, 'brand': 'Nothing', 'color': 'белый', 'weight': 201},
+    {'id': 19, 'name': 'Asus Zenfone 10', 'price': 59990, 'brand': 'Asus', 'color': 'синий', 'weight': 172},
+    {'id': 20, 'name': 'Oppo Find X6 Pro', 'price': 89990, 'brand': 'Oppo', 'color': 'черный', 'weight': 216}
+]
+
+@lab3.route('/lab3/products')
+def products():
+    min_price_cookie = request.cookies.get('min_price')
+    max_price_cookie = request.cookies.get('max_price')
+    
+    min_price_form = request.args.get('min_price')
+    max_price_form = request.args.get('max_price')
+
+    min_price = None
+    max_price = None
+    
+    if min_price_form or max_price_form:
+        min_price = int(min_price_form) if min_price_form else None
+        max_price = int(max_price_form) if max_price_form else None
+        
+        if min_price and max_price and min_price > max_price:
+            min_price, max_price = max_price, min_price
+    elif min_price_cookie or max_price_cookie:
+        min_price = int(min_price_cookie) if min_price_cookie else None
+        max_price = int(max_price_cookie) if max_price_cookie else None
+    
+    filtered_products = []
+    for product in PRODUCTS:
+        price = product['price']
+        if min_price and max_price:
+            if min_price <= price <= max_price:
+                filtered_products.append(product)
+        elif min_price:
+            if price >= min_price:
+                filtered_products.append(product)
+        elif max_price:
+            if price <= max_price:
+                filtered_products.append(product)
+        else:
+            filtered_products.append(product)
+    
+    all_prices = [p['price'] for p in PRODUCTS]
+    global_min_price = min(all_prices)
+    global_max_price = max(all_prices)
+    
+    resp = None
+    if min_price_form or max_price_form:
+        resp = make_response(render_template('lab3/products.html',
+                           products=filtered_products,
+                           min_price=min_price,
+                           max_price=max_price,
+                           global_min_price=global_min_price,
+                           global_max_price=global_max_price,
+                           products_count=len(filtered_products)))
+        
+        if min_price_form:
+            resp.set_cookie('min_price', min_price_form)
+        if max_price_form:
+            resp.set_cookie('max_price', max_price_form)
+    else:
+        resp = make_response(render_template('lab3/products.html',
+                           products=filtered_products,
+                           min_price=min_price,
+                           max_price=max_price,
+                           global_min_price=global_min_price,
+                           global_max_price=global_max_price,
+                           products_count=len(filtered_products)))
+    
+    return resp
+
+@lab3.route('/lab3/products/clear')
+def clear_products_filter():
+    resp = make_response(redirect('/lab3/products'))
+    resp.set_cookie('min_price', '', expires=0)
+    resp.set_cookie('max_price', '', expires=0)
+    return resp
