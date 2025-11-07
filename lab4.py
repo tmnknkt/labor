@@ -25,3 +25,81 @@ def div():
         return render_template('lab4/div-form.html', x1=x1, x2=x2, result=result)
     else:
         return render_template('lab4/div-form.html')
+    
+
+@lab4.route('/lab4/sum', methods=['GET', 'POST'])
+def sum():
+    x1 = request.form.get('x1', '')
+    x2 = request.form.get('x2', '')
+    result = None
+    
+    if request.method == 'POST':
+        x1_num = int(x1) if x1 != '' else 0
+        x2_num = int(x2) if x2 != '' else 0
+        result = x1_num + x2_num
+    
+    return render_template('lab4/sum-form.html', 
+                         x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/mult', methods=['GET', 'POST'])
+def mult():
+    x1 = request.form.get('x1', '')
+    x2 = request.form.get('x2', '')
+    result = None
+    
+    if request.method == 'POST':
+        x1_num = int(x1) if x1 != '' else 1
+        x2_num = int(x2) if x2 != '' else 1
+        result = x1_num * x2_num
+    
+    return render_template('lab4/mult-form.html', 
+                         x1=x1, x2=x2, result=result)
+
+
+@lab4.route('/lab4/sub', methods=['GET', 'POST'])
+def sub():
+    x1 = request.form.get('x1', '')
+    x2 = request.form.get('x2', '')
+    error = None
+    result = None
+    
+    if request.method == 'POST':
+        if x1 == '' or x2 == '':
+            error = 'Оба поля должны быть заполнены!'
+        else:
+            try:
+                x1_num = int(x1)
+                x2_num = int(x2)
+                result = x1_num - x2_num
+            except ValueError:
+                error = 'Введите целые числа!'
+    
+    return render_template('lab4/sub-form.html', 
+                         x1=x1, x2=x2, result=result, error=error)
+
+
+@lab4.route('/lab4/pow', methods=['GET', 'POST'])
+def pow():
+    x1 = request.form.get('x1', '')
+    x2 = request.form.get('x2', '')
+    error = None
+    result = None
+    
+    if request.method == 'POST':
+        if x1 == '' or x2 == '':
+            error = 'Оба поля должны быть заполнены!'
+        else:
+            try:
+                x1_num = int(x1)
+                x2_num = int(x2)
+                
+                if x1_num == 0 and x2_num == 0:
+                    error = 'Ноль в нулевой степени не определен!'
+                else:
+                    result = x1_num ** x2_num
+            except ValueError:
+                error = 'Введите целые числа!'
+    
+    return render_template('lab4/pow-form.html', 
+                         x1=x1, x2=x2, result=result, error=error)

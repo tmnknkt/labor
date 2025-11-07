@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    <h1>Умножение чисел</h1>
+    <p><em>Пустые поля считаются за 1</em></p>
+    
+    <form method="POST">
+        <div>
+            <label for="x1">Первое число:</label>
+            <input type="number" id="x1" name="x1" value="{{ x1 }}" >
+        </div>
+        <div>
+            <label for="x2">Второе число:</label>
+            <input type="number" id="x2" name="x2" value="{{ x2 }}" >
+        </div>
+        <div>
+            <button type="submit">Умножить</button>
+        </div>
+    </form>
+    
+    {% if result is defined and result is not none %}
+        <div>
+            <strong>Результат:</strong> {{ x1 if x1 != '' else 1 }} × {{ x2 if x2 != '' else 1 }} = {{ result }}
+        </div>
+    {% endif %}
+    
+    <div>
+        <a href="/lab4/mult">Назад к форме</a>
+    </div>
+{% endblock %}
