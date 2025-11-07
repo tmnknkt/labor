@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <h1>Деление чисел</h1>
+    
+    {% if error %}
+        <div class="error">
+            Ошибка: {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="POST">
+        <div>
+            <label for="x1">Первое число (делимое):</label>
+            <input type="number" id="x1" name="x1" 
+                   value="{% if x1 is defined %}{{ x1 }}{% endif %}" required>
+        </div>
+        <div>
+            <label for="x2">Второе число (делитель):</label>
+            <input type="number" id="x2" name="x2" 
+                   value="{% if x2 is defined %}{{ x2 }}{% endif %}" required>
+        </div>
+        <button type="submit">Разделить</button>
+    </form>
+    
+    {% if result is defined %}
+        <div>
+            <strong>Результат:</strong> {{ x1 }} / {{ x2 }} = {{ result }}
+        </div>
+    {% endif %}
+    <div>
+        <a href="/lab4/div">Назад к форме</a>
+    </div>
+{% endblock %}
