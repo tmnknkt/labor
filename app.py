@@ -8,7 +8,10 @@ import datetime
 
 app = Flask(__name__)
 
-app.secret_key = 'секретно-секретный секрет'
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
+
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
