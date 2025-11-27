@@ -133,7 +133,7 @@ def counter():
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP-адрес: ''' + client_ip + '''<br>
         <hr>
-        <a href="''' + url_for('clear_counter') + '''">Очистить счетчик</a>
+        <a href="''' + url_for('lab1.clear_counter') + '''">Очистить счетчик</a>
     </body>
 </html>
 '''
