@@ -3,18 +3,18 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-    <h1>Создание статьи</h1>
+    <h1>Редактирование статьи</h1>
 
     <form method="post">
         <div>
             <label>
                 Название статьи:
-                <input type="text" name="title" maxlength="50" required>
+                <input type="text" name="title" maxlength="50" value="{{ article['title'] }}">
             </label>
         </div>
 
         <div>
-            <textarea name="article_text" rows="10" style="width: 100%;" required></textarea>
+            <textarea name="article_text" rows="10" style="width: 100%;">{{ article['article_text'] }}</textarea>
         </div>
 
         {% if error %}
@@ -22,8 +22,8 @@
         {% endif %}
 
         <div>
-            <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; margin-right: 10px;">
-                Создать статью
+            <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; margin-right: 10px;">
+                Сохранить изменения
             </button>
             <a href="/lab5/list" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">
                 Отмена
