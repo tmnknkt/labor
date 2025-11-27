@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block lab %}Лабораторная работа 5{% endblock %}
 {% block main %}
-
     <h1>Мои статьи</h1>
     
     {% if login %}
         <div style="margin-bottom: 20px;">
             <span>Вы вошли как: {{ login }}</span>
+            <a href="/lab5/profile" style="margin-left: 20px; color: #007bff;">Профиль</a>
             <a href="/lab5/logout" style="margin-left: 20px; color: #dc3545;">Выйти</a>
         </div>
     {% endif %}
@@ -14,6 +14,12 @@
     {% if articles %}
         {% for article in articles %}
             <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                {% if article['is_favorite'] %}
+                    <span style="color: gold; font-weight: bold;">★ Избранная </span>
+                {% endif %}
+                {% if article['is_public'] %}
+                    <span style="color: green; font-weight: bold;">🌐 Публичная</span>
+                {% endif %}
                 <h2>{{ article['title'] }}</h2>
                 <blockquote>{{ article['article_text'] }}</blockquote>
                 <div style="margin-top: 10px;">

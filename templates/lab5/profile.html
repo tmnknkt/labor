@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 5{% endblock %}
+{% block main %}
+    <h1>Редактирование профиля</h1>
+
+    <form method="post">
+        <div style="margin-bottom: 15px;">
+            <label>
+                Логин:<br>
+                <input type="text" value="{{ user['login'] }}" disabled style="padding: 8px; width: 300px;">
+            </label>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                Имя:<br>
+                <input type="text" name="full_name" value="{{ user['full_name'] or '' }}" style="padding: 8px; width: 300px;">
+            </label>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                Новый пароль:<br>
+                <input type="password" name="password" style="padding: 8px; width: 300px;">
+            </label>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                Подтверждение пароля:<br>
+                <input type="password" name="confirm_password" style="padding: 8px; width: 300px;">
+            </label>
+        </div>
+
+        {% if error %}
+            <div style="color: red; font-weight: bold; margin-bottom: 15px;">{{ error }}</div>
+        {% endif %}
+
+        <div>
+            <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; margin-right: 10px;">
+                Сохранить
+            </button>
+            <a href="/lab5" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">
+                Отмена
+            </a>
+        </div>
+    </form>
+{% endblock %}

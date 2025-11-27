@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 5{% endblock %}
+{% block main %}
+    <h1>Публичные статьи</h1>
+
+    {% if articles %}
+        {% for article in articles %}
+            <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                {% if article['is_favorite'] %}
+                    <span style="color: gold; font-weight: bold;">★ Избранная </span>
+                {% endif %}
+                <h2>{{ article['title'] }}</h2>
+                <blockquote>{{ article['article_text'] }}</blockquote>
+                <p><small>Автор: {{ article['author_name'] or article['author_login'] }}</small></p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Публичных статей пока нет.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="/lab5" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+            На главную
+        </a>
+    </div>
+{% endblock %}

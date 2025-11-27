@@ -1,20 +1,32 @@
 {% extends "base.html" %}
-
 {% block lab %}Лабораторная работа 5{% endblock %}
-
 {% block main %}
     <h1>Редактирование статьи</h1>
 
     <form method="post">
-        <div>
+        <div style="margin-bottom: 15px;">
             <label>
                 Название статьи:
-                <input type="text" name="title" maxlength="50" value="{{ article['title'] }}">
+                <input type="text" name="title" maxlength="50" value="{{ article['title'] }}" required style="padding: 8px; width: 100%;">
             </label>
         </div>
 
-        <div>
-            <textarea name="article_text" rows="10" style="width: 100%;">{{ article['article_text'] }}</textarea>
+        <div style="margin-bottom: 15px;">
+            <textarea name="article_text" rows="10" style="width: 100%;" required>{{ article['article_text'] }}</textarea>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                <input type="checkbox" name="is_favorite" {% if article['is_favorite'] %}checked{% endif %}>
+                Сделать избранной
+            </label>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                <input type="checkbox" name="is_public" {% if article['is_public'] %}checked{% endif %}>
+                Сделать публичной
+            </label>
         </div>
 
         {% if error %}

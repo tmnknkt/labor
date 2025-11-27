@@ -1,26 +1,32 @@
 {% extends "base.html" %}
-
-{# номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 5{% endblock %}
-
-{# основной контент: #}
 {% block main %}
     <h1>Регистрация</h1>
     <form action="/lab5/register" method="post"> 
-        <div>
+        <div style="margin-bottom: 15px;">
             <label>
-                Логин: <input type="text" name="login">
+                Логин: <input type="text" name="login" required style="padding: 8px; width: 300px;">
             </label>
         </div>
 
-        <div>
+        <div style="margin-bottom: 15px;">
             <label>
-                Пароль: <input type="password" name="password">
+                Имя: <input type="text" name="full_name" style="padding: 8px; width: 300px;">
             </label>
         </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>
+                Пароль: <input type="password" name="password" required style="padding: 8px; width: 300px;">
+            </label>
+        </div>
+
         {% if error %}
-            <div style="color: red; font-weight: bold;">{{ error }}</div>
+            <div style="color: red; font-weight: bold; margin-bottom: 15px;">{{ error }}</div>
         {% endif %}
-        <button type="submit">Зарегестрироваться</button>
+
+        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px;">
+            Зарегистрироваться
+        </button>
     </form>
 {% endblock %}
