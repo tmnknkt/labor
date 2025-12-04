@@ -110,7 +110,6 @@ def api():
                         'id': id
                     }
                 
-                # Снимаем аренду
                 office['tenant'] = ''
                 return {
                     'jsonrpc': '2.0',
