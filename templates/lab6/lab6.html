@@ -21,20 +21,27 @@ function getOfficeList() {
     .then(function(data) {
         const office_list = data.result;
         const ul = document.getElementById('office-list');
+        const totalCostElement = document.getElementById('total-cost');
+        
         ul.innerHTML = '';
+        
+        let totalCost = 0;
+        const currentUser = "{{ login|safe }}";
         
         for (let i = 0; i < office_list.length; i++) {
             const office = office_list[i];
             const li = document.createElement('li');
             
             const officeInfo = document.createElement('span');
-            officeInfo.innerText = `Кабинет ${office.number}: ${office.tenant || 'свободен'}`;
+            const tenantInfo = office.tenant ? `арендован ${office.tenant}` : 'свободен';
+            officeInfo.innerHTML = `<strong>Кабинет ${office.number}</strong>: ${tenantInfo}, стоимость: <strong>${office.price} руб.</strong>`;
             li.appendChild(officeInfo);
+            li.appendChild(document.createElement('br'));
             
             if (!office.tenant) {
                 const bookingButton = document.createElement('button');
                 bookingButton.innerText = 'зарезервировать';
-                bookingButton.style.marginLeft = '10px';
+                bookingButton.style.marginTop = '5px';
                 bookingButton.onclick = function() { 
                     booking(office.number); 
                 };
@@ -42,15 +49,26 @@ function getOfficeList() {
             } else {
                 const cancelButton = document.createElement('button');
                 cancelButton.innerText = 'освободить';
-                cancelButton.style.marginLeft = '10px';
+                cancelButton.style.marginTop = '5px';
                 cancelButton.style.backgroundColor = '#ffcccc';
                 cancelButton.onclick = function() { 
                     cancellation(office.number); 
                 };
                 li.appendChild(cancelButton);
+                
+                if (currentUser && office.tenant === currentUser) {
+                    totalCost += office.price;
+                }
             }
 
             ul.appendChild(li);
+        }
+        
+        if (totalCost > 0 && currentUser) {
+            totalCostElement.innerHTML = `<h3>Общая стоимость вашей аренды: <strong>${totalCost} руб.</strong></h3>`;
+            totalCostElement.style.display = 'block';
+        } else {
+            totalCostElement.style.display = 'none';
         }
     })
     .catch(function(error) {
@@ -78,7 +96,7 @@ function booking(officeNumber) {
         if (data.error) {
             switch (data.error.code) {
                 case 1:
-                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
+                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь в системе');
                     break;
                 case 2:
                     alert('Офис уже арендуется');
@@ -122,7 +140,7 @@ function cancellation(officeNumber) {
         if (data.error) {
             switch (data.error.code) {
                 case 1:
-                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
+                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь в системе');
                     break;
                 case 4:
                     alert('Офис не арендован');
@@ -155,7 +173,28 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 {% block main %}
-    <h1>Список кабинетов</h1>
-    <div>Для бронирования необходимо авторизоваться</div>
-    <ul id="office-list"></ul>
+    <h1>Система бронирования офисов</h1>
+    
+    {% if login %}
+        <div style="margin-bottom: 20px; padding: 10px; background-color: #e8f5e8; border-radius: 5px;">
+            Вы авторизованы как: <strong>{{ login }}</strong>
+        </div>
+    {% else %}
+        <div style="margin-bottom: 20px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
+            Для бронирования офисов необходимо <a href="/lab5/login">авторизоваться</a>
+        </div>
+    {% endif %}
+    
+    <h2>Список офисов</h2>
+    <ul id="office-list" style="list-style-type: none; padding: 0;"></ul>
+    
+    <div id="total-cost" style="display: none; margin-top: 30px; padding: 15px; background-color: #f0f8ff; border-radius: 5px; border: 1px solid #d1e7ff;">
+    </div>
+    
+    {% if not login %}
+    <div style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
+        <h3>Нет аккаунта?</h3>
+        <p>Вы можете <a href="/lab5/register">зарегистрироваться</a> в системе.</p>
+    </div>
+    {% endif %}
 {% endblock %}
