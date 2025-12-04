@@ -34,10 +34,8 @@ def api():
         }
 
     if data['method'] == 'booking':
-        # Получаем параметр (номер кабинета)
         office_number = data['params']
         
-        # Если передали как строку, конвертируем в число
         if isinstance(office_number, str):
             try:
                 office_number = int(office_number)
@@ -66,6 +64,52 @@ def api():
                 return {
                     'jsonrpc': '2.0',
                     'result': "success",  
+                    'id': id
+                }
+    
+    if data['method'] == 'cancellation':
+        office_number = data['params']
+        
+        if isinstance(office_number, str):
+            try:
+                office_number = int(office_number)
+            except ValueError:
+                return {
+                    'jsonrpc': '2.0',
+                    'error': {
+                        'code': 3,
+                        'message': 'Invalid office number'
+                    },
+                    'id': id
+                }
+        
+        for office in offices:
+            if office['number'] == office_number:
+                if office['tenant'] == '':
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 4,
+                            'message': 'Office is not booked'
+                        },
+                        'id': id
+                    }
+                
+                if office['tenant'] != login:
+                    return {
+                        'jsonrpc': '2.0',
+                        'error': {
+                            'code': 5,
+                            'message': 'Cannot cancel someone else\'s booking'
+                        },
+                        'id': id
+                    }
+                
+                # Снимаем аренду
+                office['tenant'] = ''
+                return {
+                    'jsonrpc': '2.0',
+                    'result': "cancellation_success",  
                     'id': id
                 }
 
