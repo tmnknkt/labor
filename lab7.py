@@ -82,6 +82,9 @@ def put_film(id):
             "message": "Тело запроса должно содержать JSON данные фильма"
         }), 400
     
+    if film['description'] == '':
+        return {'description': 'Заполните описание'}, 400
+
     films[id] = film
     
     return jsonify(films[id]), 200
@@ -93,6 +96,11 @@ def add_film():
     
     if not film:
         abort(400, description="Тело запроса должно содержать JSON данные фильма")
+    
+    if 'description' not in film or film['description'] == '':
+        return jsonify({
+            "description": "Заполните описание"
+        }), 400
     
     films.append(film)
     
