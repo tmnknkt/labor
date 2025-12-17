@@ -62,8 +62,10 @@ def validate_film_data(film_data, is_update=False):
         try:
             year = int(film_data['year'])
             current_year = datetime.now().year
-            if year < 1895 or year > current_year:
-                errors['year'] = f'Год должен быть в диапазоне от 1895 до {current_year}'
+            if year < 1895:
+                errors['year'] = 'Год должен быть не менее 1895'
+            elif year > current_year:
+                errors['year'] = f'Год не может быть больше {current_year}'
         except (ValueError, TypeError):
             errors['year'] = 'Год должен быть числом'
     
