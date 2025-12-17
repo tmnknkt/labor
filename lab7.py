@@ -1,7 +1,5 @@
-from flask import Blueprint, render_template, request, jsonify, abort, current_app
+from flask import Blueprint, render_template, request, jsonify, abort
 from datetime import datetime
-import psycopg2
-from psycopg2.extras import RealDictCursor
 import sqlite3
 from os import path
 
@@ -14,20 +12,11 @@ def main():
 
 def db_connect():
     try:
-        if current_app.config.get('DB_TYPE') == 'postgres':
-            conn = psycopg2.connect(
-                host='localhost',
-                database='atamankina_knowledge_base',
-                user='tmnknkt',
-                password='111'
-            )
-            cur = conn.cursor(cursor_factory=RealDictCursor)
-        else:
-            dir_path = path.dirname(path.realpath(__file__))
-            db_path = path.join(dir_path, "database.db")
-            conn = sqlite3.connect(db_path)
-            conn.row_factory = sqlite3.Row
-            cur = conn.cursor()
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
         return conn, cur
     except Exception as e:
         print(f"Ошибка подключения к БД: {e}")
@@ -99,10 +88,7 @@ def get_films():
         
         result = []
         for film in films:
-            if isinstance(film, dict):
-                result.append(film)
-            else:
-                result.append(dict(film))
+            result.append(dict(film))
         
         return jsonify(result)
     except Exception as e:
@@ -116,16 +102,13 @@ def get_films():
 def get_film(id):
     conn, cur = db_connect()
     try:
-        cur.execute("SELECT * FROM films WHERE id = %s", (id,))
+        cur.execute("SELECT * FROM films WHERE id = ?", (id,))
         film = cur.fetchone()
         
         if not film:
             abort(404, description=f"Фильм с ID {id} не найден")
         
-        if isinstance(film, dict):
-            return jsonify(film)
-        else:
-            return jsonify(dict(film))
+        return jsonify(dict(film))
     except Exception as e:
         print(f"Ошибка при получении фильма: {e}")
         return jsonify({"error": "Ошибка сервера"}), 500
@@ -137,14 +120,14 @@ def get_film(id):
 def del_film(id):
     conn, cur = db_connect()
     try:
-        cur.execute("SELECT id FROM films WHERE id = %s", (id,))
+        cur.execute("SELECT id FROM films WHERE id = ?", (id,))
         if not cur.fetchone():
             return jsonify({
                 "error": "Film not found",
                 "message": f"Фильм с ID {id} не найден"
             }), 404
         
-        cur.execute("DELETE FROM films WHERE id = %s", (id,))
+        cur.execute("DELETE FROM films WHERE id = ?", (id,))
         return '', 204
     except Exception as e:
         print(f"Ошибка при удалении фильма: {e}")
@@ -171,7 +154,7 @@ def put_film(id):
     
     conn, cur = db_connect()
     try:
-        cur.execute("SELECT id FROM films WHERE id = %s", (id,))
+        cur.execute("SELECT id FROM films WHERE id = ?", (id,))
         if not cur.fetchone():
             return jsonify({
                 "error": "Film not found",
@@ -180,9 +163,8 @@ def put_film(id):
         
         cur.execute("""
             UPDATE films 
-            SET title = %s, title_ru = %s, year = %s, description = %s 
-            WHERE id = %s
-            RETURNING *
+            SET title = ?, title_ru = ?, year = ?, description = ? 
+            WHERE id = ?
         """, (
             film['title'].strip(),
             film['title_ru'].strip(),
@@ -191,12 +173,10 @@ def put_film(id):
             id
         ))
         
+        cur.execute("SELECT * FROM films WHERE id = ?", (id,))
         updated_film = cur.fetchone()
         
-        if isinstance(updated_film, dict):
-            return jsonify(updated_film), 200
-        else:
-            return jsonify(dict(updated_film)), 200
+        return jsonify(dict(updated_film)), 200
     except Exception as e:
         print(f"Ошибка при обновлении фильма: {e}")
         return jsonify({"error": "Ошибка сервера"}), 500
@@ -224,8 +204,7 @@ def add_film():
     try:
         cur.execute("""
             INSERT INTO films (title, title_ru, year, description) 
-            VALUES (%s, %s, %s, %s) 
-            RETURNING id
+            VALUES (?, ?, ?, ?)
         """, (
             film['title'].strip(),
             film['title_ru'].strip(),
@@ -233,7 +212,7 @@ def add_film():
             film['description'].strip()
         ))
         
-        new_id = cur.fetchone()['id']
+        new_id = cur.lastrowid
         
         return jsonify({"id": new_id}), 201
     except Exception as e:
