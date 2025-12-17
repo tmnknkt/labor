@@ -257,26 +257,31 @@
     
     <label>
         Название фильма на русском:
-        <input type="text" id="title-ru" placeholder="Введите название на русском">
+        <input type="text" id="title-ru" placeholder="Введите название на русском" required>
         <div id="title-ru-error" class="error-message"></div>
     </label>
     
     <label>
         Название фильма на оригинальном языке:
-        <input type="text" id="title" placeholder="Введите оригинальное название">
+        <input type="text" id="title" placeholder="Введите оригинальное название" required>
+        <div id="title-error" class="error-message"></div>
         <small style="color: #7f8c8d; display: block; margin-top: 5px;">
-            Если фильм русский, можно оставить пустым
+            Если фильм русский, можно ввести то же самое, что и в русском названии
         </small>
     </label>
     
     <label>
         Год выпуска:
-        <input type="number" id="year" placeholder="2023" min="1888" max="2025">
+        <input type="number" id="year" placeholder="2023" min="1895" max="2025" required>
+        <div id="year-error" class="error-message"></div>
     </label>
     
     <label>
         Описание:
-        <textarea id="description" placeholder="Введите описание фильма"></textarea>
+        <textarea id="description" placeholder="Введите описание фильма" required maxlength="2000"></textarea>
+        <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+            Максимум 2000 символов. Осталось: <span id="chars-counter">2000</span>
+        </small>
         <div id="description-error" class="error-message"></div>
     </label>
     
@@ -287,6 +292,26 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const descriptionInput = document.getElementById('description');
+        const charsCounter = document.getElementById('chars-counter');
+        
+        if (descriptionInput && charsCounter) {
+            descriptionInput.addEventListener('input', function() {
+                const remaining = 2000 - this.value.length;
+                charsCounter.textContent = remaining;
+                
+                if (remaining < 0) {
+                    charsCounter.style.color = '#e74c3c';
+                } else if (remaining < 100) {
+                    charsCounter.style.color = '#f39c12';
+                } else {
+                    charsCounter.style.color = '#7f8c8d';
+                }
+            });
+        }
+    });
+    
     fillFilmList();
 </script>
 {% endblock %}

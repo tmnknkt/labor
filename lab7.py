@@ -1,4 +1,9 @@
-from flask import Blueprint, render_template, request, jsonify, abort
+from flask import Blueprint, render_template, request, jsonify, abort, current_app
+from datetime import datetime
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import sqlite3
+from os import path
 
 lab7 = Blueprint('lab7', __name__)
 
@@ -7,92 +12,149 @@ def main():
     return render_template('lab7/index.html')
 
 
-films = [
-    {
-        "title": "Interstellar",
-        "title_ru": "Интерстеллар",
-        "year": 2014,
-        "description": "Когда засуха, пыльные бури и вымирание растений \n приводят человечество к продовольственному кризису, коллектив \n исследователей и учёных отправляется сквозь червоточину \n (которая предположительно соединяет области пространства-времени \n через большое расстояние) в путешествие, чтобы превзойти прежние \n ограничения для космических путешествий человека и найти планету \n с подходящими для человечества условиями."
-    },
-    {
-        "title": "The Shawshank Redemption",
-        "title_ru": "Побег из Шоушенка",
-        "year": 1994,
-        "description": "Бухгалтер Энди Дюфрейн обвинён в убийстве собственной \n жены и её любовника. Оказавшись в тюрьме под названием Шоушенк, он \n сталкивается с жестокостью и беззаконием, царящими по обе стороны \n решётки. Каждый, кто попадает в эти стены, становится их рабом до \n конца жизни. Но Энди, обладающий живым умом и доброй душой, \n находит подход как к заключённым, так и к охранникам, добиваясь их \n особого к себе расположения."
-    },
-    {
-        "title": "The Dark Knight",
-        "title_ru": "Тёмный рыцарь",
-        "year": 2008,
-        "description": "Когда Бэтмен и комиссар Гордон сталкиваются с новым врагом, хаотичным Джокером, они понимают, что их битва за Готэм только начинается. Джокер стремится доказать, что даже самые благородные люди могут пасть под натиском отчаяния и хаоса."
-    },
-    {
-        "title": "Pulp Fiction",
-        "title_ru": "Криминальное чтиво",
-        "year": 1994,
-        "description": "Две банды убийц, боксёр-неудачник, жена гангстера и пара случайных грабителей впутываются в череду непредсказуемых и комичных событий в Лос-Анджелесе."
-    },
-    {
-        "title": "Forrest Gump",
-        "title_ru": "Форрест Гамп",
-        "year": 1994,
-        "description": "Жизнь Форреста Гампа, человека с низким IQ, который, тем не менее, становится свидетелем и участником ключевых событий американской истории второй половины XX века."
-    }
-]
+def db_connect():
+    try:
+        if current_app.config.get('DB_TYPE') == 'postgres':
+            conn = psycopg2.connect(
+                host='localhost',
+                database='atamankina_knowledge_base',
+                user='tmnknkt',
+                password='111'
+            )
+            cur = conn.cursor(cursor_factory=RealDictCursor)
+        else:
+            dir_path = path.dirname(path.realpath(__file__))
+            db_path = path.join(dir_path, "database.db")
+            conn = sqlite3.connect(db_path)
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+        return conn, cur
+    except Exception as e:
+        print(f"Ошибка подключения к БД: {e}")
+        raise
+
+def db_close(conn, cur):
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 def normalize_film_data(film_data):
-
+    if not film_data:
+        return film_data
+    
     if 'title_ru' in film_data and film_data['title_ru']:
-
         if 'title' not in film_data or not film_data['title'] or film_data['title'].strip() == '':
             film_data['title'] = film_data['title_ru']
+    
+    if 'title' in film_data and film_data['title']:
+        if 'title_ru' not in film_data or not film_data['title_ru'] or film_data['title_ru'].strip() == '':
+            film_data['title_ru'] = film_data['title']
+    
     return film_data
 
 
-def ensure_films_consistency():
-    for film in films:
-        if 'title' not in film or not film['title'] or film['title'].strip() == '':
-            if 'title_ru' in film and film['title_ru']:
-                film['title'] = film['title_ru']
-
-
-ensure_films_consistency()
+def validate_film_data(film_data, is_update=False):
+    errors = {}
+    
+    if 'title_ru' not in film_data or not film_data['title_ru'] or film_data['title_ru'].strip() == '':
+        errors['title_ru'] = 'Заполните русское название'
+    elif len(film_data['title_ru'].strip()) > 255:
+        errors['title_ru'] = 'Русское название не должно превышать 255 символов'
+    
+    if 'title' not in film_data or not film_data['title'] or film_data['title'].strip() == '':
+        errors['title'] = 'Заполните оригинальное название'
+    elif len(film_data['title'].strip()) > 255:
+        errors['title'] = 'Оригинальное название не должно превышать 255 символов'
+    
+    if 'year' not in film_data:
+        errors['year'] = 'Укажите год выпуска'
+    else:
+        try:
+            year = int(film_data['year'])
+            current_year = datetime.now().year
+            if year < 1895 or year > current_year:
+                errors['year'] = f'Год должен быть в диапазоне от 1895 до {current_year}'
+        except (ValueError, TypeError):
+            errors['year'] = 'Год должен быть числом'
+    
+    if 'description' not in film_data or not film_data['description'] or film_data['description'].strip() == '':
+        errors['description'] = 'Заполните описание'
+    else:
+        desc_len = len(film_data['description'].strip())
+        if desc_len == 0:
+            errors['description'] = 'Заполните описание'
+        elif desc_len > 2000:
+            errors['description'] = 'Описание не должно превышать 2000 символов'
+    
+    return errors
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
-    return jsonify(films)
+    conn, cur = db_connect()
+    try:
+        cur.execute("SELECT * FROM films ORDER BY id")
+        films = cur.fetchall()
+        
+        result = []
+        for film in films:
+            if isinstance(film, dict):
+                result.append(film)
+            else:
+                result.append(dict(film))
+        
+        return jsonify(result)
+    except Exception as e:
+        print(f"Ошибка при получении фильмов: {e}")
+        return jsonify({"error": "Ошибка сервера"}), 500
+    finally:
+        db_close(conn, cur)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
-    if id < 0 or id >= len(films):
-        abort(404, description=f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}")
-    
-    return jsonify(films[id])
+    conn, cur = db_connect()
+    try:
+        cur.execute("SELECT * FROM films WHERE id = %s", (id,))
+        film = cur.fetchone()
+        
+        if not film:
+            abort(404, description=f"Фильм с ID {id} не найден")
+        
+        if isinstance(film, dict):
+            return jsonify(film)
+        else:
+            return jsonify(dict(film))
+    except Exception as e:
+        print(f"Ошибка при получении фильма: {e}")
+        return jsonify({"error": "Ошибка сервера"}), 500
+    finally:
+        db_close(conn, cur)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-    if id < 0 or id >= len(films):
-        return jsonify({
-            "error": "Film not found",
-            "message": f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}"
-        }), 404
-    
-    del films[id]
-    return '', 204
+    conn, cur = db_connect()
+    try:
+        cur.execute("SELECT id FROM films WHERE id = %s", (id,))
+        if not cur.fetchone():
+            return jsonify({
+                "error": "Film not found",
+                "message": f"Фильм с ID {id} не найден"
+            }), 404
+        
+        cur.execute("DELETE FROM films WHERE id = %s", (id,))
+        return '', 204
+    except Exception as e:
+        print(f"Ошибка при удалении фильма: {e}")
+        return jsonify({"error": "Ошибка сервера"}), 500
+    finally:
+        db_close(conn, cur)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
-    if id < 0 or id >= len(films):
-        return jsonify({
-            "error": "Film not found",
-            "message": f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}"
-        }), 404
-    
     film = request.get_json()
     
     if not film:
@@ -103,15 +165,43 @@ def put_film(id):
     
     film = normalize_film_data(film)
     
-    if 'title_ru' not in film or film['title_ru'] == '':
-        return jsonify({"title_ru": "Заполните русское название"}), 400
+    errors = validate_film_data(film, is_update=True)
+    if errors:
+        return jsonify(errors), 400
     
-    if film['description'] == '':
-        return jsonify({"description": "Заполните описание"}), 400
-
-    films[id] = film
-    
-    return jsonify(films[id]), 200
+    conn, cur = db_connect()
+    try:
+        cur.execute("SELECT id FROM films WHERE id = %s", (id,))
+        if not cur.fetchone():
+            return jsonify({
+                "error": "Film not found",
+                "message": f"Фильм с ID {id} не найден"
+            }), 404
+        
+        cur.execute("""
+            UPDATE films 
+            SET title = %s, title_ru = %s, year = %s, description = %s 
+            WHERE id = %s
+            RETURNING *
+        """, (
+            film['title'].strip(),
+            film['title_ru'].strip(),
+            int(film['year']),
+            film['description'].strip(),
+            id
+        ))
+        
+        updated_film = cur.fetchone()
+        
+        if isinstance(updated_film, dict):
+            return jsonify(updated_film), 200
+        else:
+            return jsonify(dict(updated_film)), 200
+    except Exception as e:
+        print(f"Ошибка при обновлении фильма: {e}")
+        return jsonify({"error": "Ошибка сервера"}), 500
+    finally:
+        db_close(conn, cur)
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
@@ -119,17 +209,37 @@ def add_film():
     film = request.get_json()
     
     if not film:
-        abort(400, description="Тело запроса должно содержать JSON данные фильма")
+        return jsonify({
+            "error": "Bad request",
+            "message": "Тело запроса должно содержать JSON данные фильма"
+        }), 400
     
     film = normalize_film_data(film)
     
-    if 'title_ru' not in film or film['title_ru'] == '':
-        return jsonify({"title_ru": "Заполните русское название"}), 400
+    errors = validate_film_data(film)
+    if errors:
+        return jsonify(errors), 400
     
-    if 'description' not in film or film['description'] == '':
-        return jsonify({"description": "Заполните описание"}), 400
-    
-    films.append(film)
-    
-    new_id = len(films) - 1
-    return jsonify({"id": new_id}), 201
+    conn, cur = db_connect()
+    try:
+        cur.execute("""
+            INSERT INTO films (title, title_ru, year, description) 
+            VALUES (%s, %s, %s, %s) 
+            RETURNING id
+        """, (
+            film['title'].strip(),
+            film['title_ru'].strip(),
+            int(film['year']),
+            film['description'].strip()
+        ))
+        
+        new_id = cur.fetchone()['id']
+        
+        return jsonify({"id": new_id}), 201
+    except Exception as e:
+        print(f"Ошибка при добавлении фильма: {e}")
+        return jsonify({"error": "Ошибка сервера"}), 500
+    finally:
+        db_close(conn, cur)
+
+
