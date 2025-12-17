@@ -41,6 +41,25 @@ films = [
 ]
 
 
+def normalize_film_data(film_data):
+
+    if 'title_ru' in film_data and film_data['title_ru']:
+
+        if 'title' not in film_data or not film_data['title'] or film_data['title'].strip() == '':
+            film_data['title'] = film_data['title_ru']
+    return film_data
+
+
+def ensure_films_consistency():
+    for film in films:
+        if 'title' not in film or not film['title'] or film['title'].strip() == '':
+            if 'title_ru' in film and film['title_ru']:
+                film['title'] = film['title_ru']
+
+
+ensure_films_consistency()
+
+
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
     return jsonify(films)
@@ -82,8 +101,13 @@ def put_film(id):
             "message": "Тело запроса должно содержать JSON данные фильма"
         }), 400
     
+    film = normalize_film_data(film)
+    
+    if 'title_ru' not in film or film['title_ru'] == '':
+        return jsonify({"title_ru": "Заполните русское название"}), 400
+    
     if film['description'] == '':
-        return {'description': 'Заполните описание'}, 400
+        return jsonify({"description": "Заполните описание"}), 400
 
     films[id] = film
     
@@ -97,10 +121,13 @@ def add_film():
     if not film:
         abort(400, description="Тело запроса должно содержать JSON данные фильма")
     
+    film = normalize_film_data(film)
+    
+    if 'title_ru' not in film or film['title_ru'] == '':
+        return jsonify({"title_ru": "Заполните русское название"}), 400
+    
     if 'description' not in film or film['description'] == '':
-        return jsonify({
-            "description": "Заполните описание"
-        }), 400
+        return jsonify({"description": "Заполните описание"}), 400
     
     films.append(film)
     
