@@ -54,3 +54,18 @@ def get_film(id):
         abort(404, description=f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}")
     
     return jsonify(films[id])
+
+
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
+def del_film(id):
+    # Проверяем, находится ли id в допустимом диапазоне
+    if id < 0 or id >= len(films):
+        # Возвращаем ошибку 404 с сообщением
+        return jsonify({
+            "error": "Film not found",
+            "message": f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}"
+        }), 404
+    
+    # Удаляем фильм из списка
+    del films[id]
+    return '', 204
