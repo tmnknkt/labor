@@ -85,3 +85,16 @@ def put_film(id):
     films[id] = film
     
     return jsonify(films[id]), 200
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film = request.get_json()
+    
+    if not film:
+        abort(400, description="Тело запроса должно содержать JSON данные фильма")
+    
+    films.append(film)
+    
+    new_id = len(films) - 1
+    return jsonify({"id": new_id}), 201
