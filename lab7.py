@@ -48,9 +48,7 @@ def get_films():
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
-    # Проверяем, находится ли id в допустимом диапазоне
     if id < 0 or id >= len(films):
-        # Возвращаем ошибку 404, если id выходит за пределы
         abort(404, description=f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}")
     
     return jsonify(films[id])
@@ -58,14 +56,32 @@ def get_film(id):
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-    # Проверяем, находится ли id в допустимом диапазоне
     if id < 0 or id >= len(films):
-        # Возвращаем ошибку 404 с сообщением
         return jsonify({
             "error": "Film not found",
             "message": f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}"
         }), 404
     
-    # Удаляем фильм из списка
     del films[id]
     return '', 204
+
+
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
+def put_film(id):
+    if id < 0 or id >= len(films):
+        return jsonify({
+            "error": "Film not found",
+            "message": f"Фильм с ID {id} не найден. Доступные ID: от 0 до {len(films)-1}"
+        }), 404
+    
+    film = request.get_json()
+    
+    if not film:
+        return jsonify({
+            "error": "Bad request",
+            "message": "Тело запроса должно содержать JSON данные фильма"
+        }), 400
+    
+    films[id] = film
+    
+    return jsonify(films[id]), 200
