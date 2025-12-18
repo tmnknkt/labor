@@ -1,0 +1,63 @@
+{% extends "rgz/base.html" %}
+
+{% block title %}Мои заказы{% endblock %}
+
+{% block content %}
+<h1>История заказов</h1>
+
+{% if orders %}
+<div class="orders-list">
+    {% for order_data in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <h3>Заказ #{{ order_data.order.id }}</h3>
+            <p><strong>Дата заказа:</strong> {{ order_data.order.created_at }}</p>
+            <p><strong>Статус:</strong> {{ order_data.order.status }}</p>
+            <p><strong>Общая сумма:</strong> {{ "%.2f"|format(order_data.order.total_amount) }} руб.</p>
+        </div>
+        
+        {% if order_data.order_items %}
+        <div class="order-items">
+            <h4>Товары в заказе:</h4>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Цена за шт.</th>
+                        <th>Сумма</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_data.order_items %}  
+                    <tr>
+                        <td>
+                            <strong>{{ item.name }}</strong>
+                            {% if item.image_url %}
+                            <br>
+                            <img src="{{ url_for('static', filename='rgz/images/' + item.image_url) }}" 
+                                 alt="{{ item.name }}" class="order-item-img">
+                            {% endif %}
+                        </td>
+                        <td>{{ item.quantity }} шт.</td>
+                        <td>{{ "%.2f"|format(item.price) }} руб.</td>
+                        <td>{{ "%.2f"|format(item.price * item.quantity) }} руб.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-items">Нет информации о товарах в заказе</p>
+        {% endif %}
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-orders">
+    <p>У вас еще нет заказов</p>
+    <a href="{{ url_for('rgz.products') }}" class="btn">Перейти к покупкам</a>
+</div>
+{% endif %}
+{% endblock %}

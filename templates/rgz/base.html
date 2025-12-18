@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мебельный магазин - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='rgz/css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='rgz/images/favicon-32x32.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='rgz/images/favicon-32x32.png') }}" type="image/png">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <a href="{{ url_for('rgz.index') }}" class="logo">Мебельный магазин</a>
+                <div class="nav-links">
+                    <a href="{{ url_for('rgz.index') }}">Главная</a>
+                    <a href="{{ url_for('rgz.products') }}">Каталог</a>
+                    {% if session.login %}
+                        <a href="{{ url_for('rgz.cart') }}">Корзина</a>
+                        <a href="{{ url_for('rgz.orders') }}">Заказы</a>
+                        <a href="{{ url_for('rgz.profile') }}">Профиль</a>
+                        <a href="{{ url_for('rgz.logout') }}">Выйти</a>
+                    {% else %}
+                        <a href="{{ url_for('rgz.login') }}">Войти</a>
+                        <a href="{{ url_for('rgz.register') }}">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="student-info">
+            <p><strong>Студент:</strong> {{ student_info.full_name }}</p>
+            <p><strong>Группа:</strong> {{ student_info.group }}</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Мебельный магазин. Все права защищены.</p>
+            <p>Студент: {{ student_info.full_name }} | Группа: {{ student_info.group }}</p>
+            <p><a href="/" class="back-to-labs">К списку лабораторных работ</a></p>
+        </div>
+    </footer>
+</body>
+</html>

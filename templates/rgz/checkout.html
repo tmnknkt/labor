@@ -1,0 +1,31 @@
+{% extends "rgz/base.html" %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<h1>Оформление заказа</h1>
+
+{% if cart_items %}
+<div class="order-summary">
+    <h2>Сумма заказа: {{ "%.2f"|format(total) }} руб.</h2>
+    
+    <h3>Товары в заказе:</h3>
+    <ul>
+        {% for item in cart_items %}
+        <li>{{ item.name }} - {{ item.quantity }} шт. × {{ "%.2f"|format(item.price) }} руб. = {{ "%.2f"|format(item.price * item.quantity) }} руб.</li>
+        {% endfor %}
+    </ul>
+    
+    <form method="POST">
+        <p>Пожалуйста, подтвердите оформление заказа:</p>
+        <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+        <a href="{{ url_for('rgz.cart') }}" class="btn">Вернуться в корзину</a>
+    </form>
+</div>
+{% else %}
+<div class="empty-order">
+    <p>Нет товаров для оформления заказа</p>
+    <a href="{{ url_for('rgz.products') }}" class="btn">Перейти к покупкам</a>
+</div>
+{% endif %}
+{% endblock %}

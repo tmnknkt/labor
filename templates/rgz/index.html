@@ -1,0 +1,60 @@
+{% extends "rgz/base.html" %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Добро пожаловать в наш мебельный магазин!</h1>
+    <p>Лучшая мебель для вашего дома по доступным ценам</p>
+</div>
+
+{% if not session.login %}
+<div class="auth-prompt">
+    <p>Чтобы добавлять товары в корзину и оформлять заказы, пожалуйста, <a href="{{ url_for('rgz.login') }}">войдите</a> или <a href="{{ url_for('rgz.register') }}">зарегистрируйтесь</a></p>
+</div>
+{% endif %}
+
+<div class="categories-section">
+    <h2>Категории товаров</h2>
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description }}</p>
+            <a href="{{ url_for('rgz.products', category=category.id) }}" class="btn">Смотреть товары</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="featured-products">
+    <h2>Популярные товары</h2>
+    <div class="products-grid">
+        {% for product in featured_products %}
+        <div class="product-card">
+            <div class="product-image">
+                {% if product.image_url %}
+                    <img src="{{ url_for('static', filename='rgz/images/' + product.image_url) }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="no-image">Нет изображения</div>
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p class="price">{{ "%.2f"|format(product.price) }} руб.</p>
+                <p class="stock">В наличии: {{ product.stock }} шт.</p>
+                <div class="product-actions">
+                    <a href="{{ url_for('rgz.product_detail', product_id=product.id) }}" class="btn">Подробнее</a>
+                    {% if session.login %}
+                    <form action="{{ url_for('rgz.add_to_cart', product_id=product.id) }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary">В корзину</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

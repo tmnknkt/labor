@@ -1,0 +1,62 @@
+{% extends "rgz/base.html" %}
+
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+<h1>Каталог мебели</h1>
+
+<!-- Поиск и фильтры -->
+<div class="filters">
+    <form method="GET" class="search-form">
+        <input type="text" name="search" placeholder="Поиск товаров..." value="{{ search_query }}">
+        <button type="submit" class="btn">Найти</button>
+    </form>
+    
+    <div class="categories-filter">
+        <a href="{{ url_for('rgz.products') }}" class="btn {% if not selected_category %}active{% endif %}">Все товары</a>
+        {% for category in categories %}
+        <a href="{{ url_for('rgz.products', category=category.id) }}" 
+           class="btn {% if selected_category == category.id %}active{% endif %}">
+            {{ category.name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Список товаров -->
+{% if products %}
+<div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <div class="product-image">
+            {% if product.image_url %}
+                <img src="{{ url_for('static', filename='rgz/images/' + product.image_url) }}" alt="{{ product.name }}">
+            {% else %}
+                <div class="no-image">Нет изображения</div>
+            {% endif %}
+        </div>
+        <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="category">{{ product.category_name }}</p>
+            <p class="price">{{ "%.2f"|format(product.price) }} руб.</p>
+            <p class="stock">В наличии: {{ product.stock }} шт.</p>
+            <div class="product-actions">
+                <a href="{{ url_for('rgz.product_detail', product_id=product.id) }}" class="btn">Подробнее</a>
+                {% if session.login %}
+                <form action="{{ url_for('rgz.add_to_cart', product_id=product.id) }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-primary">В корзину</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-products content-center">
+    <p>Товары не найдены</p>
+    <a href="{{ url_for('rgz.products') }}" class="btn">Сбросить фильтры</a>
+</div>
+{% endif %}
+{% endblock %}

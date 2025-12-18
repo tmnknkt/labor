@@ -1,0 +1,52 @@
+{% extends "rgz/base.html" %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<h1>Корзина покупок</h1>
+
+{% if cart_items %}
+<div class="cart-items">
+    {% for item in cart_items %}
+    <div class="cart-item">
+        <div class="cart-item-image">
+            {% if item.image_url %}
+                <img src="{{ url_for('static', filename='rgz/images/' + item.image_url) }}" alt="{{ item.name }}">
+            {% else %}
+                <div class="no-image">Нет изображения</div>
+            {% endif %}
+        </div>
+        <div class="cart-item-info">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ "%.2f"|format(item.price) }} руб.</p>
+            <p>Количество: {{ item.quantity }}</p>
+            <p>Итого: {{ "%.2f"|format(item.price * item.quantity) }} руб.</p>
+            
+            <div class="cart-item-actions">
+                <form action="{{ url_for('rgz.update_cart', item_id=item.id) }}" method="POST" style="display: inline;">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.stock }}" style="width: 60px;">
+                    <button type="submit" class="btn">Обновить</button>
+                </form>
+                
+                <a href="{{ url_for('rgz.remove_from_cart', item_id=item.id) }}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="cart-total">
+    <h3>Общая сумма: {{ "%.2f"|format(total) }} руб.</h3>
+    
+    <div class="cart-actions">
+        <a href="{{ url_for('rgz.products') }}" class="btn">Продолжить покупки</a>
+        <a href="{{ url_for('rgz.checkout') }}" class="btn btn-primary">Оформить заказ</a>
+    </div>
+</div>
+{% else %}
+<div class="empty-cart content-center">
+    <p>Ваша корзина пуста</p>
+    <a href="{{ url_for('rgz.products') }}" class="btn">Начать покупки</a>
+</div>
+{% endif %}
+{% endblock %}
