@@ -226,6 +226,10 @@ footer {
     margin-top: auto;
 }
 
+.cart-items {
+    margin: 20px 0;
+}
+
 .cart-item {
     display: flex;
     align-items: center;
@@ -240,16 +244,30 @@ footer {
     width: 100px;
     height: 100px;
     margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
 }
 
 .cart-item-info {
     flex-grow: 1;
 }
 
+.cart-item-info h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
 .cart-item-actions {
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-top: 10px;
 }
 
 .cart-total {
@@ -259,6 +277,18 @@ footer {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 2px solid #ddd;
+}
+
+.no-image-small {
+    width: 100px;
+    height: 100px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: #999;
+    font-style: italic;
 }
 
 .categories-grid {
@@ -304,6 +334,13 @@ footer {
     
     .cart-item-image {
         margin: 0 0 15px 0;
+        width: 150px;
+        height: 150px;
+    }
+    
+    .no-image-small {
+        width: 150px;
+        height: 150px;
     }
 }
 
@@ -554,13 +591,13 @@ footer {
 }
 
 .back-to-labs {
-    color: #ffb6c1; 
+    color: #ffb6c1;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
 }
 
 .back-to-labs:hover {
-    color: #ff8fa3; 
+    color: #ff8fa3;
     text-decoration: underline;
 }
