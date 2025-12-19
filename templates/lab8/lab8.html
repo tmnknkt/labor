@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 8{% endblock %}
+{% block main %}
+    <h1>Flask и ORM</h1>
+    
+    <div style="margin-bottom: 20px;">
+        {% if login %}
+            <span>Вы вошли как: {{ login }}</span>
+            <a href="/lab8/profile" style="margin-left: 20px; color: #050c13;">Профиль</a>
+            <a href="/lab8/logout" style="margin-left: 20px; color: #dc3545;">Выйти</a>
+        {% else %}
+            <span>Anonymous</span>
+        {% endif %}
+    </div>
+    
+    <div>Список сделанных страниц:</div>
+    <ol>
+        <li><a href="/lab8/login">Вход</a></li>
+        <li><a href="/lab8/register">Регистрация</a></li>
+        <li><a href="/lab8/articles">Мои статьи</a></li>
+        <li><a href="/lab8/create">Создать статью</a></li>
+    </ol>
+{% endblock %}
