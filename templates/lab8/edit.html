@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h1>Редактирование статьи</h1>
+    
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <form action="/lab8/edit/{{ article.id }}" method="post">
+        <div style="margin-bottom: 15px;">
+            <label>
+                Заголовок: <br>
+                <input type="text" name="title" value="{{ article.title }}" style="width: 100%; padding: 8px; margin-top: 5px;" required>
+            </label>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>
+                Текст статьи: <br>
+                <textarea name="article_text" rows="10" style="width: 100%; padding: 8px; margin-top: 5px;" required>{{ article.article_text }}</textarea>
+            </label>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>
+                <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+                Добавить в избранное
+            </label>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>
+                <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+                Сделать публичной
+            </label>
+        </div>
+        
+        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px;">Сохранить изменения</button>
+        <a href="/lab8/articles" style="margin-left: 15px; color: #666;">Отмена</a>
+    </form>
+{% endblock %}

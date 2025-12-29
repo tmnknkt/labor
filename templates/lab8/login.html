@@ -5,7 +5,6 @@
 {% block main %}
     <h1>Вход в систему</h1>
     
-    {# Вывод сообщения об ошибке, если оно передано #}
     {% if error %}
         <div style="color: red; margin-bottom: 15px; padding: 10px; background-color: #ffe6e6; border: 1px solid #ff9999; border-radius: 5px;">
             <strong>Ошибка:</strong> {{ error }}
@@ -25,10 +24,16 @@
             </label>
         </div>
         
+        <div>
+            <label>
+                <input type="checkbox" name="remember">
+                Запомнить меня
+            </label>
+        </div>
+        
         <button type="submit">Вход</button>
     </form>
     
-    {# Дополнительная ссылка на регистрацию #}
     <div style="margin-top: 20px;">
         <p>Нет аккаунта? <a href="/lab8/register">Зарегистрируйтесь</a></p>
     </div>

@@ -4,8 +4,8 @@
     <h1>Flask и ORM</h1>
     
     <div style="margin-bottom: 20px;">
-        {% if login %}
-            <span>Вы вошли как: {{ login }}</span>
+        {% if current_user.is_authenticated %}
+            <span>Вы вошли как: {{ current_user.login }}</span>
             <a href="/lab8/logout" style="margin-left: 20px; color: #dc3545;">Выйти</a>
         {% else %}
             <span>Anonymous</span>
