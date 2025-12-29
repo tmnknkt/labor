@@ -7,7 +7,7 @@ from os import path
 from db import db
 from db.models import users, articles as ArticleModel
 from flask_login import login_user, login_required, current_user, logout_user
-from sqlalchemy import or_  
+from sqlalchemy import or_ , func
 
 
 lab8 = Blueprint('lab8', __name__)
@@ -172,6 +172,9 @@ def search_articles():
                              error='Введите поисковый запрос',
                              articles=[])
     
+
+    search_lower = search_query.lower()
+    
     if current_user.is_authenticated:
         articles_list = ArticleModel.query.filter(
             or_(
@@ -180,15 +183,15 @@ def search_articles():
             )
         ).filter(
             or_(
-                ArticleModel.title.ilike(f'%{search_query}%'),
-                ArticleModel.article_text.ilike(f'%{search_query}%')
+                func.lower(ArticleModel.title).contains(search_lower),
+                func.lower(ArticleModel.article_text).contains(search_lower)
             )
         ).all()
     else:
         articles_list = ArticleModel.query.filter_by(is_public=True).filter(
             or_(
-                ArticleModel.title.ilike(f'%{search_query}%'),
-                ArticleModel.article_text.ilike(f'%{search_query}%')
+                func.lower(ArticleModel.title).contains(search_lower),
+                func.lower(ArticleModel.article_text).contains(search_lower)
             )
         ).all()
     
