@@ -2,9 +2,468 @@
 
 {% block lab %}Лабораторная работа 9{% endblock %}
 
-{% block script %}{% endblock %}
-
 {% block main %}
-  <h1>Поздравления</h1>
-{% endblock %}
+<style>
 
+
+    /* Конфетти на заднем плане */
+    .lab9-body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(#858bd3 2px, transparent 3px),
+            radial-gradient(#aaa9cf 2px, transparent 3px),
+            radial-gradient(#cccee6 2px, transparent 3px);
+        background-size: 50px 50px;
+        background-position: 0 0, 25px 25px, 0 25px;
+        opacity: 0.3;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .lab9-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .lab9-title {
+        color: #2b00ff;
+        margin: 0 0 2rem;
+        font-size: 3em;
+        font-weight: bold;
+        padding: 1rem;
+        letter-spacing: 1px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        border: 3px solid #cfafff;
+        box-shadow: 0 6px 20px rgba(255, 93, 143, 0.3);
+    }
+
+    .lab9-counters {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem 3rem;
+        border-radius: 20px;
+        margin-bottom: 2.5rem;
+        color: #120ee6;
+        display: inline-block;
+        font-size: 1.3em;
+        box-shadow: 0 6px 20px rgba(255, 93, 143, 0.3);
+        border: 3px solid #c2afff;
+    }
+
+    .lab9-counter-item {
+        margin: 1rem 0;
+        font-weight: bold;
+        font-size: 1.2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .lab9-limit-note {
+        color: #7b5dff;
+        font-size: 1.1em;
+        margin-top: 1rem;
+        font-weight: bold;
+        background: rgba(255, 175, 204, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        display: inline-block;
+    }
+
+    .lab9-area {
+        position: relative;
+        height: 650px;
+        width: 100%;
+        border: 4px solid #b497ff;
+        border-radius: 20px;
+        margin: 2rem 0;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 25px rgba(255, 93, 143, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .lab9-present {
+        position: absolute;
+        cursor: pointer;
+        width: 110px;
+        height: 110px;
+        z-index: 2;
+        transition: transform 0.3s, filter 0.3s;
+        filter: drop-shadow(0 5px 15px rgba(255, 93, 143, 0.4));
+    }
+
+    .lab9-present.opened {
+        cursor: default;
+        filter: brightness(1.1) drop-shadow(0 5px 10px rgba(255, 93, 143, 0.3));
+    }
+
+    .lab9-present img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .lab9-present:hover:not(.opened) {
+        transform: scale(1.15) rotate(5deg);
+        filter: drop-shadow(0 8px 20px rgba(166, 93, 255, 0.6));
+    }
+
+    .lab9-popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(93, 112, 255, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .lab9-popup-content {
+        background: linear-gradient(45deg, #705dff, #bd97ff, #beafff);
+        padding: 3rem;
+        border-radius: 25px;
+        text-align: center;
+        max-width: 550px;
+        width: 90%;
+        border: 4px solid #ffffff;
+        position: relative;
+        box-shadow: 0 15px 35px rgba(255, 93, 143, 0.4);
+    }
+
+    .lab9-gift-img {
+        width: 180px;
+        height: 180px;
+        margin: 1.5rem auto;
+        object-fit: contain;
+        display: block;
+        filter: drop-shadow(0 8px 20px rgba(255, 255, 255, 0.6));
+    }
+
+    .lab9-close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        cursor: pointer;
+        font-size: 2.5rem;
+        color: #ffffff;
+        font-weight: bold;
+        text-shadow: 0 0 10px #7d5dff;
+        transition: transform 0.3s;
+        line-height: 1;
+    }
+
+    .lab9-close-btn:hover {
+        transform: scale(1.2);
+        color: #ffebf3;
+    }
+
+    .lab9-reset-btn {
+        margin-top: 2rem;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(45deg, #ff5d8f, #ff97b7);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.3em;
+        font-weight: bold;
+        transition: all 0.3s;
+        box-shadow: 0 6px 15px rgba(255, 93, 143, 0.4);
+        letter-spacing: 1px;
+    }
+
+    .lab9-reset-btn:hover {
+        background: linear-gradient(45deg, #5947ff, #ad7aff);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(255, 93, 143, 0.6);
+    }
+
+    .lab9-popup h2 {
+        color: #ffffff;
+        font-size: 2.2em;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .lab9-greeting-text {
+        color: #fff;
+        font-size: 1.4em;
+        line-height: 1.6;
+        margin: 1.5rem 0;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Анимация для подарков */
+    @keyframes lab9-float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .lab9-present:not(.opened) {
+        animation: lab9-float 3s ease-in-out infinite;
+        animation-delay: calc(var(--i, 0) * 0.2s);
+    }
+
+    /* Снежинки */
+    .snowflake {
+        position: fixed;
+        top: -10px;
+        color: #fff;
+        font-size: 1.2rem;
+        text-shadow: 0 0 5px #aa97ff;
+        animation: fall linear forwards;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    // Создание снежинок
+    function createSnowflakes() {
+        const snowflakes = ['❄️', '❅', '❆', '✨'];
+        const body = document.querySelector('body');
+        
+        for (let i = 0; i < 30; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+            snowflake.style.animationDelay = Math.random() * 5 + 's';
+            snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            
+            body.appendChild(snowflake);
+            
+            // Удаляем снежинку после завершения анимации
+            setTimeout(() => {
+                snowflake.remove();
+            }, 15000);
+        }
+    }
+</script>
+
+<body class="lab9-body" onload="createSnowflakes(); setInterval(createSnowflakes, 3000);">
+    <div class="lab9-main">
+        <h1 class="lab9-title">Новогодние Подарки ❄️</h1>
+        
+        <div class="lab9-counters">
+            <div class="lab9-counter-item">
+                <span>✨ Открыто:</span>
+                <span id="open-count">{{ open_count }}</span>
+                <span>✨</span>
+            </div>
+            <div class="lab9-counter-item">
+                <span>✨ Осталось:</span>
+                <span id="left-count">{{ left_count }}</span>
+                <span>✨</span>
+            </div>
+            <div class="lab9-limit-note">✨ Можно открыть только 3 подарка! ✨</div>
+        </div>
+
+        <div class="lab9-area" id="lab9-area"></div>
+        
+        <button class="lab9-reset-btn" onclick="resetGame()">
+            <span>🔄</span>
+            <span>Начать заново</span>
+            <span>🔄</span>
+        </button>
+    </div>
+
+    <div class="lab9-popup" id="lab9-popup">
+        <div class="lab9-popup-content">
+            <span class="lab9-close-btn" onclick="hidePopup()">×</span>
+            <h2>✨ Поздравляю! ✨</h2>
+            <div id="lab9-gift-holder"></div>
+            <p id="lab9-greeting-text" class="lab9-greeting-text"></p>
+        </div>
+    </div>
+
+    <script>
+        const pos = {{ pos|tojson }};
+        const states = {{ states|tojson }};
+        const boxImages = {{ boxes|tojson }};
+        
+        function loadPresents() {
+            const area = document.getElementById('lab9-area');
+            area.innerHTML = '';
+            
+            pos.forEach((p, idx) => {
+                const present = document.createElement('div');
+                present.className = `lab9-present ${states[idx] ? 'opened' : ''}`;
+                present.style.top = p.top;
+                present.style.left = p.left;
+                present.dataset.id = idx;
+                present.style.setProperty('--i', idx);
+                
+                const img = document.createElement('img');
+                if (states[idx]) {
+                    img.src = "{{ url_for('static', filename='lab9/opened.png') }}";
+                    img.alt = "Открытая коробка";
+                } else {
+                    img.src = "{{ url_for('static', filename='lab9/') }}" + boxImages[idx];
+                    img.alt = "Закрытая коробка " + (idx + 1);
+                }
+                
+                present.appendChild(img);
+                area.appendChild(present);
+                
+                if (!states[idx]) {
+                    present.addEventListener('click', openPresent);
+                }
+            });
+        }
+        
+        function openPresent(event) {
+            const present = event.currentTarget;
+            const boxId = parseInt(present.dataset.id);
+            
+            fetch('{{ url_for("lab9.open_box") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ box_id: boxId })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, data })))
+            .then(({ status, data }) => {
+                if (status === 200) {
+                    if (data.ok) {
+                        document.getElementById('open-count').textContent = data.open_count;
+                        document.getElementById('left-count').textContent = data.left_count;
+                        
+                        present.classList.add('opened');
+                        const img = present.querySelector('img');
+                        img.src = "{{ url_for('static', filename='lab9/opened.png') }}";
+                        img.alt = "Открытая коробка";
+                        
+                        present.removeEventListener('click', openPresent);
+                        
+                        showPopup(data.greeting, data.gift);
+                    } else {
+                        alert("✨ " + (data.msg || 'Неизвестная ошибка'));
+                    }
+                } else {
+                    alert('❌ Ошибка сервера: ' + (data.msg || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при открытии подарка:', error);
+                alert('🌐 Ошибка сети. Проверьте подключение к интернету.');
+            });
+        }
+        
+        function showPopup(greeting, gift) {
+            const popup = document.getElementById('lab9-popup');
+            const text = document.getElementById('lab9-greeting-text');
+            const holder = document.getElementById('lab9-gift-holder');
+            
+            text.textContent = "✨ " + greeting + " ✨";
+            holder.innerHTML = `<img src="{{ url_for('static', filename='lab9/gifts/') }}${gift}" class="lab9-gift-img" alt="Подарок">`;
+            
+            popup.style.display = 'flex';
+            
+            createConfetti();
+        }
+        
+        function createConfetti() {
+            const colors = ['#ff5d8f', '#ff97b7', '#ffafcc', '#ffc8dd', '#ffb6c1', '#ffffff'];
+            const confettiCount = 100;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-20px';
+                confetti.style.zIndex = '9999';
+                confetti.style.opacity = '0.8';
+                confetti.style.pointerEvents = 'none';
+                
+                document.body.appendChild(confetti);
+                
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        function hidePopup() {
+            document.getElementById('lab9-popup').style.display = 'none';
+        }
+        
+        function resetGame() {
+            if (confirm('✨ Начать игру заново? Все открытые подарки пропадут. ✨')) {
+                fetch('{{ url_for("lab9.reset") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        location.reload();
+                    } else {
+                        alert('✨ Ошибка при сбросе игры');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('✨ Ошибка при сбросе игры');
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPresents();
+            
+            document.getElementById('lab9-popup').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('lab9-popup')) {
+                    hidePopup();
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hidePopup();
+                }
+            });
+        });
+    </script>
+</body>
+{% endblock %}
