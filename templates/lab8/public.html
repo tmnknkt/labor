@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h1>Публичные статьи</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="/lab8/" style="color: #666; text-decoration: none;">← На главную</a>
+    </div>
+    
+    {% if articles %}
+        <div style="display: grid; gap: 20px;">
+            {% for article in articles %}
+                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.article_text[:300] }}{% if article.article_text|length > 300 %}...{% endif %}</p>
+                    <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                        <span>Автор: {% if article.user %}{{ article.user.login }}{% else %}Неизвестен{% endif %}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Публичных статей пока нет.</p>
+    {% endif %}
+{% endblock %}

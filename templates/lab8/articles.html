@@ -16,8 +16,7 @@
                     <h3>{{ article.title }}</h3>
                     <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
                     <div style="margin-top: 10px; font-size: 14px; color: #666;">
-                        <span>Лайков: {{ article.likes }}</span>
-                        <span style="margin-left: 15px;">Избранная: {{ "Да" if article.is_favorite else "Нет" }}</span>
+                        <span>Избранная: {{ "Да" if article.is_favorite else "Нет" }}</span>
                         <span style="margin-left: 15px;">Публичная: {{ "Да" if article.is_public else "Нет" }}</span>
                     </div>
                     <div style="margin-top: 15px;">

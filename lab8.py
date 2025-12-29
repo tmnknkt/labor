@@ -7,6 +7,7 @@ from os import path
 from db import db
 from db.models import users, articles as ArticleModel
 from flask_login import login_user, login_required, current_user, logout_user
+from sqlalchemy import or_  
 
 
 lab8 = Blueprint('lab8', __name__)
@@ -74,6 +75,7 @@ def register():
 @lab8.route('/lab8/articles')
 @login_required
 def articles():
+    # Получаем статьи текущего пользователя
     user_articles = ArticleModel.query.filter_by(login_id=current_user.id).all()
     return render_template('lab8/articles.html', articles=user_articles)
 
@@ -98,8 +100,7 @@ def create_article():
         title=title,
         article_text=article_text,
         is_favorite=is_favorite,
-        is_public=is_public,
-        likes=0
+        is_public=is_public
     )
     
     db.session.add(new_article)
@@ -151,6 +152,49 @@ def delete_article(article_id):
     db.session.commit()
     
     return redirect('/lab8/articles')
+
+
+@lab8.route('/lab8/public')
+def public_articles():
+    public_articles_list = ArticleModel.query.filter_by(is_public=True).all()
+    return render_template('lab8/public.html', articles=public_articles_list)
+
+
+@lab8.route('/lab8/search', methods=['GET', 'POST'])
+def search_articles():
+    if request.method == 'GET':
+        return render_template('lab8/search.html')
+    
+    search_query = request.form.get('search_query', '').strip()
+    
+    if not search_query:
+        return render_template('lab8/search.html', 
+                             error='Введите поисковый запрос',
+                             articles=[])
+    
+    if current_user.is_authenticated:
+        articles_list = ArticleModel.query.filter(
+            or_(
+                ArticleModel.login_id == current_user.id,
+                ArticleModel.is_public == True
+            )
+        ).filter(
+            or_(
+                ArticleModel.title.ilike(f'%{search_query}%'),
+                ArticleModel.article_text.ilike(f'%{search_query}%')
+            )
+        ).all()
+    else:
+        articles_list = ArticleModel.query.filter_by(is_public=True).filter(
+            or_(
+                ArticleModel.title.ilike(f'%{search_query}%'),
+                ArticleModel.article_text.ilike(f'%{search_query}%')
+            )
+        ).all()
+    
+    return render_template('lab8/search.html', 
+                         articles=articles_list,
+                         search_query=search_query)
 
 
 @lab8.route('/lab8/logout')

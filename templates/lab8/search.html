@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h1>Поиск статей</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="/lab8/" style="color: #666; text-decoration: none;">← На главную</a>
+    </div>
+    
+    <form action="/lab8/search" method="post" style="margin-bottom: 30px;">
+        <div style="display: flex; gap: 10px;">
+            <input type="text" 
+                   name="search_query" 
+                   placeholder="Введите текст для поиска..."
+                   value="{{ search_query or '' }}"
+                   style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <button type="submit" 
+                    style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px;">
+                Искать
+            </button>
+        </div>
+    </form>
+    
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    {% if search_query and not error %}
+        <h3>Результаты поиска для "{{ search_query }}":</h3>
+        
+        {% if articles %}
+            <div style="display: grid; gap: 20px; margin-top: 20px;">
+                {% for article in articles %}
+                    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                        <h3>{{ article.title }}</h3>
+                        <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                            <span>Публичная: {{ "Да" if article.is_public else "Нет" }}</span>
+                            <span style="margin-left: 15px;">
+                                {% if current_user.is_authenticated and article.login_id == current_user.id %}
+                                    <span style="color: #28a745;">(Ваша статья)</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if current_user.is_authenticated and article.login_id == current_user.id %}
+                            <div style="margin-top: 15px;">
+                                <a href="/lab8/edit/{{ article.id }}" style="color: #007bff; text-decoration: none; margin-right: 10px;">Редактировать</a>
+                                <a href="/lab8/delete/{{ article.id }}" style="color: #dc3545; text-decoration: none;" onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">Удалить</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>По вашему запросу ничего не найдено.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
